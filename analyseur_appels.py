@@ -93,6 +93,27 @@ def modifier_credits(username, nouveau_credit):
     except Exception:
         pass
 
+# ✨ دالة معالجة تحليل البيانات المعزولة كلياً لمنع مشاكل الـ Indentation
+def executer_analyse_ia(texte_appel, user, credits_actuels):
+    try:
+        # ⚠️ ضع مفتاح الـ API الحقيقي الخاص بك هنا مباشرة مكان الكلمة المكتوبة بالفرنسية
+        api_key = os.environ.get("GEMINI_API_KEY", "YOUR_GEMINI_API_KEY")
+        
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel("gemini-1.5-pro")
+        
+        prompt_final = f"{PROMPT_BASE}\n{texte_appel}"
+        response = model.generate_content(prompt_final)
+        
+        st.session_state.analyse_text = response.text
+        
+        if user != "admin" and isinstance(credits_actuels, int):
+            modifier_credits(user, credits_actuels - 1)
+            
+        st.success("✅ Analyse terminée avec succès !")
+    except Exception as e:
+        st.error(f"🚨 Une erreur est survenue lors de la génération : {str(e)}")
+
 # 🔒 BASE DE DONNÉES SÉCURISÉE
 USERS_DB = {
     "admin": {"password": "aghassur2026"},
@@ -136,26 +157,6 @@ if not st.session_state.authenticated:
 else:
     username = st.session_state.user_logged
     st.markdown('<div class="main-title">🎙️ AGHassur — Auditeur Vocal IA</div>', unsafe_allow_html=True)
-    st.markdown(f'<div class="subtitle">Connecté en tant que : <b>{username}</b></div>', unsafe_allow_html=True)
-    
-    # Gestion des crédits
-    credits_restants = "Illimité" if username == "admin" else lire_credits(username)
-    st.sidebar.metric(label="Crédits d'analyse restants", value=str(credits_restants))
-    
-    if st.sidebar.button("Se déconnecter"):
-        st.session_state.authenticated = False
-        st.session_state.user_logged = ""
-        st.session_state.analyse_text = None
-        st.rerun()
-
-    # Zone de texte
-    st.markdown("### 📝 Collez la transcription de l'appel ci-dessous :")
-    transcription = st.text_area("Insérez le texte complet de l'échange ici...", height=300, placeholder="[00:01] Expert: Bonjour...", key="input_transcription")
-    
-    # Bouton pour lancer l'analyse
-    if st.button("🚀 Lancer l'Audit et l'Analyse de l'appel"):
-        # التحقق من المدخلات بشكل خطي تام
-        if not transcription.strip():
 
 
 
