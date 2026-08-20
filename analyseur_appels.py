@@ -44,7 +44,7 @@ Génère un tableau comparatif au format Markdown strict basé uniquement sur le
 | Poste de Santé | Attentes & Besoins du Client Senior (Interlocuteur 2) | Offre & Proposition de l'Expert (Interlocuteur 1) |
 
 ### 5. Avis Independent et Évaluation du R.G.P.D AGHassur (Module Final Isolé)
-Prends de la hauteur en tant a que R.G.P.D AGHassur pour donner une conclusion claire, juridique, technique et stratégique sur le dossier. Tu devez obligatoirement fournir :
+Prends de la hauteur en tant qu'expert R.G.P.D AGHassur pour donner une conclusion claire, juridique, technique et stratégique sur le dossier. Tu devez obligatoirement fournir :
 - **Orientation de la Responsabilité Principale de l'échec :** [Détermine avec précision si l'échec de la vente est imputable à un manque de compétence/clarté de l'Expert, ou s'il s'agit d'un 'Échec commercial inhérent au profil du Client' (Client hermétique / refus de coopérer malgré la bonne posture de l'expert)].
 - **Statut Conformité R.G.P.D. (Données de Santé) :** [Analyse si l'expert a respecté la protection des données sensibles : Vérification d'identité, recueil du consentement, absence de fuite d'informations sur les pathologies. Statut : Conforme / Non Conforme avec justification].
 - **Risque de Chute de Contrat (Résiliation / Non-signature) :** [Évalue l'impact au regard des réglementations françaises : Risque Faible, Moyen ou Critique de perte du client lié aux lois Hamon ou Châtel].
@@ -63,7 +63,7 @@ USERS_DB = {
     "client_france": {"password": "agh7500", "credits": 5}
 }
 
-# Initialisation sécurisée delle variables de session
+# Initialisation sécurisée
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 if "user_logged" not in st.session_state:
@@ -83,7 +83,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 1️⃣ نظام الدخول المستقل تماماً عبر التجميد القاطع لمنع التداخل الهيكلي
+# 1️⃣ ÉCRAN DE CONNEXION PRIVÉ
 if not st.session_state.authenticated:
     st.markdown('<div class="main-title">🔐 Connexion — AGHassur Audit IA</div>', unsafe_allow_html=True)
     with st.form("login_form"):
@@ -98,9 +98,9 @@ if not st.session_state.authenticated:
                 st.rerun()
             else:
                 st.error("Identifiants incorrects. Veuillez réessayer.")
-    st.stop() 
+    st.stop()
 
-# 2️⃣ الواجهة الرئيسية للتطبيق (تسير في سطر مستقيم تماماً وبدون أي إزاحات حركية)
+# 2️⃣ INTERFACE PRINCIPALE (Structure strictement linéaire sans bloc 'else' pour éviter les bugs)
 user = st.session_state.user_logged
 st.markdown('<div class="main-title">🎙️ AGHassur — Auditeur Vocal IA</div>', unsafe_allow_html=True)
 st.markdown(f'<div class="subtitle">Connecté en tant que : <b>{user}</b></div>', unsafe_allow_html=True)
@@ -113,7 +113,7 @@ if st.sidebar.button("Se déconnecter"):
     st.session_state.analyse_text = None
     st.rerun()
 
-# تأمين نموذج المدخلات بالكامل داخل Form لمنع المسافات العشوائية وحلقات التعليق اللانهائية
+# Formulaire pour sécuriser la clé et la transcription
 with st.form("audit_form"):
     st.markdown("### 🔑 Configuration de la clé API Google Gemini :")
     api_key_field = st.text_input(
@@ -129,7 +129,7 @@ with st.form("audit_form"):
     )
     submit_audit = st.form_submit_button("🚀 Lancer l'Audit et l'Analyse de l'appel")
 
-# معالجة الضغط والتحليل ببنية خطية مستقيمة ومستقلة 100% (تم مسح الـ else التالفة)
+# Logique de traitement linéaire et plate
 if submit_audit:
     api_key_saisie = api_key_field.strip()
     texte_valide = bool(transcription_field.strip())
@@ -137,13 +137,15 @@ if submit_audit:
     
     if not api_key_saisie:
         st.error("❌ Veuillez saisir votre clé API Gemini dans la case ci-dessus avant de lancer l'analyse.")
-    elif not texte_valide:
+    
+    if api_key_saisie and not texte_valide:
         st.warning("⚠️ Veuillez coller une transcription avant de lancer l'analyse.")
-    elif not credits_valides:
+        
+    if api_key_saisie and texte_valide and not credits_valides:
         st.error("❌ Vous n'avez plus de crédits suffisants pour effectuer cette analyse.")
-    else:
-        # تشغيل موديول الاتصال المباشر بجوجل
-
+        
+    if api_key_saisie and texte_valide and credits_valides:
+        genai.configure(api_key=api_key_saisie)
 
 
 
