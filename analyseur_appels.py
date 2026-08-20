@@ -72,6 +72,8 @@ if "analyse_text" not in st.session_state:
     st.session_state.analyse_text = None
 if "user_credits" not in st.session_state:
     st.session_state.user_credits = 0
+if "user_api_key" not in st.session_state:
+    st.session_state.user_api_key = ""
 
 # Style CSS
 st.markdown("""
@@ -113,33 +115,33 @@ else:
         st.session_state.analyse_text = None
         st.rerun()
 
+    # 📍 البلاصة الي يتحط فاها مفتاح الـ API في الواجهة بشكل سري ومحمي
+    st.markdown("### 🔑 Configuration de la clé API Google Gemini :")
+    st.session_state.user_api_key = st.text_input(
+        "Entrez votre clé API Gemini (commence par AIzaSy...)", 
+        value=st.session_state.user_api_key, 
+        type="password", 
+        placeholder="Collez votre clé API Gemini ici..."
+    )
+
     st.markdown("### 📝 Collez la transcription de l'appel ci-dessous :")
     transcription = st.text_area("Insérez le texte complet de l'échange ici...", height=300, placeholder="[00:01] Expert: Bonjour...", key="input_transcription")
     
-    # تنفيذ الفحص والتحليل ببنية خطية مسطحة تماماً تمنع الـ SyntaxError
+    # تنفيذ الفحص والتحليل ببنية خطية مع جلب المفتاح مباشرة من الواجهة
     if st.button("🚀 Lancer l'Audit et l'Analyse de l'appel"):
-        # جلب مفتاح الـ API بشكل فوري ومباشر
-        api_key = os.environ.get("GEMINI_API_KEY", "YOUR_GEMINI_API_KEY")
+        api_key_saisie = st.session_state.user_api_key.strip()
         
-        if not transcription.strip():
+        if not api_key_saisie:
+            st.error("❌ Veuillez saisir votre clé API Gemini dans la case ci-dessus avant de lancer l'analyse.")
+        elif not transcription.strip():
             st.warning("⚠️ Veuillez coller une transcription avant de lancer l'analyse.")
         elif user != "admin" and st.session_state.user_credits <= 0:
             st.error("❌ Vous n'avez plus de crédits suffisants pour effectuer cette analyse.")
-        elif api_key in ["YOUR_GEMINI_API_KEY", "", "VOTRE_CLE_API_ICI"]:
-            st.error("❌ مفتاح الـ API الخاص بجوجل غير مضبوط! يرجى وضع المفتاح في السطر 116 بدلاً من 'YOUR_GEMINI_API_KEY'.")
         else:
             with st.spinner("🧠 L'IA AGHassur analyse l'échange en profondeur... Veuillez patienter..."):
-                genai.configure(api_key=api_key)
-                model = genai.GenerativeModel("gemini-1.5-pro")
-                prompt_final = f"{PROMPT_BASE}\n{transcription}"
-                
-                # تنفيذ جلب التقرير
-                response = model.generate_content(prompt_final)
-                st.session_state.analyse_text = response.text
-                
-                if user != "admin":
-                    st.session_state.user_credits -= 1
-                    
+                try:
+                    # ربط الاتصال بالمفتاح المكتوب في الواجهة مباشرة
+
 
 
 
