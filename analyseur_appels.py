@@ -115,7 +115,7 @@ else:
         st.session_state.analyse_text = None
         st.rerun()
 
-    # خانة الـ API Key المضافة للواجهة
+    # 📍 خانة الـ API Key المضافة للواجهة
     st.markdown("### 🔑 Configuration de la clé API Google Gemini :")
     st.session_state.user_api_key = st.text_input(
         "Entrez votre clé API Gemini (Copiez le code depuis Google AI Studio)", 
@@ -127,23 +127,23 @@ else:
     st.markdown("### 📝 Collez la transcription de l'appel ci-dessous :")
     transcription = st.text_area("Insérez le texte complet de l'échange ici...", height=300, placeholder="[00:01] Expert: Bonjour...", key="input_transcription")
     
-    # معالجة الضغط والتحليل ببنية خطية خالية تماماً من الشروط المسببة للتعليق
+    # المعالجة الخطية والمسطحة تماماً للزر تمنع الـ IndentationError نهائياً
     if st.button("🚀 Lancer l'Audit et l'Analyse de l'appel"):
         api_key_saisie = st.session_state.user_api_key.strip()
         texte_valide = bool(transcription.strip())
         credits_valides = bool(user == "admin" or st.session_state.user_credits > 0)
         
+        # سلسلة التحقق الخطي المستقلة والمباشرة
         if not api_key_saisie:
             st.error("❌ Veuillez saisir votre clé API Gemini dans la case ci-dessus avant de lancer l'analyse.")
-        elif not texte_valide:
+        
+        if api_key_saisie and not texte_valide:
             st.warning("⚠️ Veuillez coller une transcription avant de lancer l'analyse.")
-        elif not credits_valides:
-            st.error("❌ Vous n'avez plus de crédits suffisants pour effectuer cette analyse.")
-        else:
-            with st.spinner("🧠 L'IA AGHassur analyse l'échange en profondeur..."):
-                try:
-
             
+        if api_key_saisie and texte_valide and not credits_valides:
+            st.error("❌ Vous n'avez plus de crédits suffisants pour effectuer cette analyse.")
+            
+
 
 
 
