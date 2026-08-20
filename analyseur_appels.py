@@ -16,7 +16,7 @@ RÈGLES DE DÉCODAGE DES PERSONNAGES & GESTION DU TRANSFERT :
 ⚠️ ATTENTION : À cause du transfert de ligne sur Ringover, le nom affiché à côté des répliques de l'interlocuteur 2 peut être erroné. Ignore cette erreur.
 
 CONSIGNE ULTRA-CRUCIALE : IMPLANTATION DES VERBATIMS (PROPOS EXACTS) :
-Tu dois impérativement extraire et CITER LE TEXTE EXACT (Verbatim entre guillemets) dit par l'expert ou le client pour appuyer tes conclusions dans chaque section, en particulier dans les erreurs, les objections et les commentaires du responsable.
+Tu devez impérativement extraire et CITER LE TEXTE EXACT (Verbatim entre guillemets) dit par l'expert ou le client pour appuyer tes conclusions dans chaque section, en particulier dans les erreurs, les objections et les commentaires du responsable.
 
 CONSIGNE ABSOLUE SUR LE TEMPS (TIMESTAMPS) :
 Tu dois lister le temps exact (Timestamp comme [01:23] ou [04:12]) extrait du texte pour TOUTES LES SECTIONS du rapport. Il est interdit de rédiger une observation sans son horodatage précis.
@@ -36,7 +36,7 @@ Format strict attendu :
 
 ### 3. Solutions de Traitement & Plan d'Action Correctif (Mise en correspondance temporelle)
 Donne pour chaque minute d'erreur de l'expert ou d'objection du client final, le script exact ou la posture idéale attendue.
-Si l'expert a tout bien fait face à un client bloqué, propose des techniques de contournement psychologique ou des offres alternatives adaptées aux profiles seniors complexes.
+Si l'expert a tout bien fait face à un client bloqué, propose des techniques de contournement psychologique ou des offres alternatives adaptées aux profils seniors complexes.
 
 ### 4. Tableau de Comparaison des Garanties
 Génère un tableau comparatif au format Markdown strict basé uniquement sur les données réelles de cet appel :
@@ -44,7 +44,7 @@ Génère un tableau comparatif au format Markdown strict basé uniquement sur le
 | Poste de Santé | Attentes & Besoins du Client Senior (Interlocuteur 2) | Offre & Proposition de l'Expert (Interlocuteur 1) |
 
 ### 5. Avis Indépendant et Évaluation du R.G.P.D AGHassur (Module Final Isolé)
-Prends de la hauteur en tant que R.G.P.D AGHassur pour donner une conclusion claire, juridique, technique et stratégique sur le dossier. Tu dois obligatoirement fournir :
+Prends de la hauteur en tant que R.G.P.D AGHassur pour donner une conclusion claire, juridique, technique et stratégique sur le dossier. Tu devez obligatoirement fournir :
 - **Orientation de la Responsabilité Principale de l'échec :** [Détermine avec précision si l'échec de la vente est imputable à un manque de compétence/clarté de l'Expert, ou s'il s'agit d'un 'Échec commercial inhérent au profil du Client' (Client hermétique / refus de coopérer malgré la bonne posture de l'expert)].
 - **Statut Conformité R.G.P.D. (Données de Santé) :** [Analyse si l'expert a respecté la protection des données sensibles : Vérification d'identité, recueil du consentement, absence de fuite d'informations sur les pathologies. Statut : Conforme / Non Conforme avec justification].
 - **Risque de Chute de Contrat (Résiliation / Non-signature) :** [Évalue l'impact au regard des réglementations françaises : Risque Faible, Moyen ou Critique de perte du client lié aux lois Hamon ou Châtel].
@@ -127,7 +127,7 @@ if not st.session_state.authenticated:
             else:
                 st.error("Identifiants incorrects. Veuillez réessayer.")
 
-# 2️⃣ INTERFACE PRINCIPALE (المعالجة الخطية والمستقرة)
+# 2️⃣ INTERFACE PRINCIPALE (البلاصة متاع المكالمة والتحليل مربوط بالذكاء الاصطناعي 100%)
 else:
     user = st.session_state.user_logged
     st.markdown('<div class="main-title">🎙️ AGHassur — Auditeur Vocal IA</div>', unsafe_allow_html=True)
@@ -145,11 +145,12 @@ else:
     st.markdown("### 📝 Collez la transcription de l'appel ci-dessous :")
     transcription = st.text_area("Insérez le texte complet de l'échange ici...", height=300, placeholder="[00:01] Expert: Bonjour...", key="input_transcription")
     
+    # تحضير المتغيرات والفلاتر بشكل خطي تام
     bouton_presse = st.button("🚀 Lancer l'Audit et l'Analyse de l'appel")
     texte_existe = bool(transcription.strip())
     credits_ok = bool(user == "admin" or (isinstance(credits_restants, int) and credits_restants > 0))
 
-    if bouton_presse and not texte_existe:
+
 
 
 
