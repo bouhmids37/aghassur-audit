@@ -19,7 +19,7 @@ CONSIGNE ULTRA-CRUCIALE : IMPLANTATION DES VERBATIMS (PROPOS EXACTS) :
 Tu devez impérativement extraire et CITER LE TEXTE EXACT (Verbatim entre guillemets) dit par l'expert ou le client pour appuyer tes conclusions dans chaque section, en particulier dans les erreurs, les objections et les commentaires du responsable.
 
 CONSIGNE ABSOLUE SUR LE TEMPS (TIMESTAMPS) :
-Tu dois lister le temps exact (Timestamp comme [01:23] ou [04:12]) extrait du texte pour TOUTES LES SECTIONS du rapport. Il est interdit de rédiger une observation sans son horodatage précis.
+Tu dois lister le temps exact (Timestamp comme [01:23] ou [04:12]) extrait du texte pour TOUTES LES SECTIONS du rapport. Il est interdit de rédiger une observation sans son hor导age précis.
 
 Génère un rapport contenant obligatoirement les sections suivantes :
 
@@ -72,8 +72,6 @@ if "analyse_text" not in st.session_state:
     st.session_state.analyse_text = None
 if "user_credits" not in st.session_state:
     st.session_state.user_credits = 0
-if "user_api_key" not in st.session_state:
-    st.session_state.user_api_key = ""
 
 # Style CSS
 st.markdown("""
@@ -89,14 +87,14 @@ st.markdown("""
 if not st.session_state.authenticated:
     st.markdown('<div class="main-title">🔐 Connexion — AGHassur Audit IA</div>', unsafe_allow_html=True)
     with st.form("login_form"):
-        username = st.text_input("Nom d'utilisateur")
-        password = st.text_input("Mot de passe", type="password")
+        username_input = st.text_input("Nom d'utilisateur")
+        password_input = st.text_input("Mot de passe", type="password")
         submit_login = st.form_submit_button("Se connecter")
         if submit_login:
-            if username in USERS_DB and USERS_DB[username]["password"] == password:
+            if username_input in USERS_DB and USERS_DB[username_input]["password"] == password_input:
                 st.session_state.authenticated = True
-                st.session_state.user_logged = username
-                st.session_state.user_credits = USERS_DB[username]["credits"]
+                st.session_state.user_logged = username_input
+                st.session_state.user_credits = USERS_DB[username_input]["credits"]
                 st.rerun()
             else:
                 st.error("Identifiants incorrects. Veuillez réessayer.")
@@ -115,33 +113,39 @@ else:
         st.session_state.analyse_text = None
         st.rerun()
 
-    # 📍 خانة الـ API Key المضافة للواجهة
-    st.markdown("### 🔑 Configuration de la clé API Google Gemini :")
-    st.session_state.user_api_key = st.text_input(
-        "Entrez votre clé API Gemini (Copiez le code depuis Google AI Studio)", 
-        value=st.session_state.user_api_key, 
-        type="password", 
-        placeholder="Collez votre clé API Gemini ici..."
-    )
+    # ✨ تأمين المدخلات بالكامل داخل Form لمنع مسح البيانات أو تعليق الزر
+    with st.form("audit_form"):
+        st.markdown("### 🔑 Configuration de la clé API Google Gemini :")
+        api_key_field = st.text_input(
+            "Entrez votre clé API Gemini (Copiez le code depuis Google AI Studio)", 
+            type="password", 
+            placeholder="Collez votre clé API Gemini ici (commence par AQ)..."
+        )
 
-    st.markdown("### 📝 Collez la transcription de l'appel ci-dessous :")
-    transcription = st.text_area("Insérez le texte complet de l'échange ici...", height=300, placeholder="[00:01] Expert: Bonjour...", key="input_transcription")
-    
-    # المعالجة الخطية والمسطحة تماماً للزر تمنع الـ IndentationError نهائياً
-    if st.button("🚀 Lancer l'Audit et l'Analyse de l'appel"):
-        api_key_saisie = st.session_state.user_api_key.strip()
-        texte_valide = bool(transcription.strip())
+        st.markdown("### 📝 Collez la transcription de l'appel ci-dessous :")
+        transcription_field = st.text_area(
+            "Insérez le texte complet de l'échange ici...", 
+            height=300, 
+            placeholder="[00:01] Expert: Bonjour..."
+        )
+        
+        # زر التشغيل التابع للنموذج المباشر
+        submit_audit = st.form_submit_button("🚀 Lancer l'Audit et l'Analyse de l'appel")
+
+    # معالجة البيانات والربط فور الضغط على الزر داخل الـ Form
+    if submit_audit:
+        api_key_saisie = api_key_field.strip()
+        texte_valide = bool(transcription_field.strip())
         credits_valides = bool(user == "admin" or st.session_state.user_credits > 0)
         
-        # سلسلة التحقق الخطي المستقلة والمباشرة
         if not api_key_saisie:
             st.error("❌ Veuillez saisir votre clé API Gemini dans la case ci-dessus avant de lancer l'analyse.")
-        
-        if api_key_saisie and not texte_valide:
+        elif not texte_valide:
             st.warning("⚠️ Veuillez coller une transcription avant de lancer l'analyse.")
-            
-        if api_key_saisie and texte_valide and not credits_valides:
+        elif not credits_valides:
             st.error("❌ Vous n'avez plus de crédits suffisants pour effectuer cette analyse.")
+        else:
+
             
 
 
