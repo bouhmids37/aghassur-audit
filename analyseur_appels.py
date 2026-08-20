@@ -98,9 +98,9 @@ if not st.session_state.authenticated:
                 st.rerun()
             else:
                 st.error("Identifiants incorrects. Veuillez réessayer.")
-    st.stop() # إيقاف فوري لتنفيذ بقية الصفحة حتى ينجح تسجيل الدخول، مما يحذف الـ Else المسببة للخطأ نهائياً
+    st.stop() 
 
-# 2️⃣ الواجهة الرئيسية للتطبيق (تسير الآن في سطر مستقيم 100% وبدون أي إزاحات)
+# 2️⃣ الواجهة الرئيسية للتطبيق (تسير في سطر مستقيم تماماً وبدون أي إزاحات حركية)
 user = st.session_state.user_logged
 st.markdown('<div class="main-title">🎙️ AGHassur — Auditeur Vocal IA</div>', unsafe_allow_html=True)
 st.markdown(f'<div class="subtitle">Connecté en tant que : <b>{user}</b></div>', unsafe_allow_html=True)
@@ -113,7 +113,7 @@ if st.sidebar.button("Se déconnecter"):
     st.session_state.analyse_text = None
     st.rerun()
 
-# تأمين نموذج المدخلات والـ Form
+# تأمين نموذج المدخلات بالكامل داخل Form لمنع المسافات العشوائية وحلقات التعليق اللانهائية
 with st.form("audit_form"):
     st.markdown("### 🔑 Configuration de la clé API Google Gemini :")
     api_key_field = st.text_input(
@@ -129,7 +129,7 @@ with st.form("audit_form"):
     )
     submit_audit = st.form_submit_button("🚀 Lancer l'Audit et l'Analyse de l'appel")
 
-# معالجة الضغط والتحليل ببنية خطية مستقيمة ومستقلة تماماً لا تقبل الأخطاء الهيكلية
+# معالجة الضغط والتحليل ببنية خطية مستقيمة ومستقلة 100% (تم مسح الـ else التالفة)
 if submit_audit:
     api_key_saisie = api_key_field.strip()
     texte_valide = bool(transcription_field.strip())
@@ -142,7 +142,7 @@ if submit_audit:
     elif not credits_valides:
         st.error("❌ Vous n'avez plus de crédits suffisants pour effectuer cette analyse.")
     else:
-
+        # تشغيل موديول الاتصال المباشر بجوجل
 
 
 
