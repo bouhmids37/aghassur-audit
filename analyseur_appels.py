@@ -121,15 +121,18 @@ else:
         "Entrez votre clé API Gemini (Copiez le code depuis Google AI Studio)", 
         value=st.session_state.user_api_key, 
         type="password", 
-        placeholder="Collez votre clé API Gemini ici (commence par AQ ou AIza)..."
+        placeholder="Collez votre clé API Gemini ici..."
     )
 
     st.markdown("### 📝 Collez la transcription de l'appel ci-dessous :")
     transcription = st.text_area("Insérez le texte complet de l'échange ici...", height=300, placeholder="[00:01] Expert: Bonjour...", key="input_transcription")
     
-    # تنفيذ الفحص والتحليل ببنية خطية مسطحة 100% بدون أي تداخل
     if st.button("🚀 Lancer l'Audit et l'Analyse de l'appel"):
+        # جلب المفتاح المكتوب في الواجهة أو من النظام الداخلي
         api_key_saisie = st.session_state.user_api_key.strip()
+        if not api_key_saisie:
+            api_key_saisie = os.environ.get("GEMINI_API_KEY", "")
+
         texte_valide = bool(transcription.strip())
         credits_valides = bool(user == "admin" or st.session_state.user_credits > 0)
         
@@ -140,8 +143,7 @@ else:
         elif not credits_valides:
             st.error("❌ Vous n'avez plus de crédits suffisants pour effectuer cette analyse.")
         else:
-            # معالجة مباشرة ومسطحة تماماً تمنع الـ IndentationError
-            genai.configure(api_key=api_key_saisie)
+
 
 
 
