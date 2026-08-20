@@ -67,7 +67,9 @@ def lire_credits(username):
         lines = f.readlines()
         for line in lines:
             if line.startswith(f"{username}:"):
-                return int(line.split(":").strip())
+                parts = line.strip().split(":")
+                if len(parts) > 1:
+                    return int(parts[1])
     return 0
 
 def modifier_credits(username, nouveau_credit):
@@ -103,8 +105,8 @@ if "analyse_text" not in st.session_state:
 # Style CSS épuré d'origine
 st.markdown("""
     <style>
-    .main-title { font-size:32px; font-weight:700; color:#1E3A8A; margin-bottom:5px; }
-    .subtitle { font-size:16px; color:#4B5563; margin-bottom:25px; }
+    .main-title { font-size:32px; font-weight:700; color:#1E3A8A; margin-bottom:5px; text-align: center; }
+    .subtitle { font-size:16px; color:#4B5563; margin-bottom:25px; text-align: center; }
     .stButton>button { background-color: #1E3A8A; color: white; font-weight:600; padding: 10px 24px; border-radius: 6px; border: none; width: 100%; }
     .stButton>button:hover { background-color: #172554; color: white; }
     </style>
@@ -112,15 +114,12 @@ st.markdown("""
 
 # 1️⃣ ÉCRAN DE CONNEXION PRIVÉ
 if not st.session_state.authenticated:
-    st.markdown('<div style="text-align:center; margin-top:50px;">', unsafe_allow_html=True)
     st.markdown('<div class="main-title">🔐 Connexion — AGHassur Audit IA</div>', unsafe_allow_html=True)
-    st.markdown('<div class="subtitle">Veuillez vous connecter pour accéder à l\'auditeur de conformité.</div>', unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
     
     with st.form("login_form"):
-        username = st.text_input("Nom d'utilisateur :")
-        password = st.text_input("Mot de passe :", type="password")
-        submit_login = st.form_submit_button("S'authentifier")
+        username = st.text_input("Nom d'utilisateur")
+        password = st.text_input("Mot de passe", type="password")
+        submit_login = st.form_submit_button("Se connecter")
         
         if submit_login:
             if username in USERS_DB and USERS_DB[username]["password"] == password:
@@ -128,31 +127,31 @@ if not st.session_state.authenticated:
                 st.session_state.user_logged = username
                 st.rerun()
             else:
-                st.error("❌ Identifiants incorrects. Veuillez contacter le R.G.P.D AGHassur.")
+                st.error("Identifiants incorrects. Veuillez réessayer.")
 
-# 2️⃣ INTERFACE RECHERCHE & AUDIT PROFESSIONNELLE
+# 2️⃣ INTERFACE PRINCIPALE (البلاصة متاع المكالمة والتحليل)
 else:
-    current_user = st.session_state.user_logged
-    user_credits = 99999 if current_user == "admin" else lire_credits(current_user)
+    user = st.session_state.user_logged
+    st.markdown('<div class="main-title">🎙️ AGHassur — Auditeur Vocal IA</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="subtitle">Connecté en tant que : <b>{user}</b></div>', unsafe_allow_html=True)
     
-    st.markdown('<div class="main-title">📊 AGHassur — Espace Audit & Qualité (Gemini Core)</div>', unsafe_allow_html=True)
-    st.markdown(f'<div class="subtitle">Session active : <b>{current_user}</b> | Crédits restants : {user_credits}</div>', unsafe_allow_html=True)
-
-    # Configuration Sidebar
-    st.sidebar.header("⚙️ Paramètres")
-    MY_DEFAULT_KEY = "key api" 
+    # Affichage des crédits dans la barre latérale
+    credits_restants = "Illimité" if user == "admin" else lire_credits(user)
+    st.sidebar.metric(label="Crédits d'analyse restants", value=str(credits_restants))
     
-    client_api_key = st.sidebar.text_input(
-        "Votre clé API Gemini (Optionnel)", 
-        type="password",
-        placeholder="Laissez vide pour utiliser la clé par défaut"
-    )
-    
-    if st.sidebar.button("🚪 Se déconnecter"):
+    if st.sidebar.button("Se déconnecter"):
         st.session_state.authenticated = False
         st.session_state.user_logged = ""
         st.session_state.analyse_text = None
         st.rerun()
+
+    # 📍 خانة لصق المكالمة (Zone de texte pour la transcription)
+    st.markdown("### 📝 Collez la transcription de l'appel ci-dessous :")
+    transcription = st.text_area("Insérez le texte complet de l'échange ici...", height=300, placeholder="[00:01] Expert: Bonjour... \n[00:15] Client: Allô oui...", key="input_transcription")
+    
+    # 🚀 زر التحليل
+    if st.button("🚀 Lancer l'Audit et l'Analyse de l'appel"):
+        if not transcription.strip():
 
 
 
