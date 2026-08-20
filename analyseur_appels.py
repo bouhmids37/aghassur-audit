@@ -69,7 +69,7 @@ def lire_credits(username):
                 if line.startswith(f"{username}:"):
                     valeur = line.strip().split(":")
                     if len(valeur) > 1:
-                        return int(valeur[1]) # ✨ تم إصلاح القراءة هنا valeur[1] بدلاً من valeur بالكامل
+                        return int(valeur[1].strip())
     except Exception:
         pass
     return 3
@@ -154,9 +154,8 @@ else:
     
     # Bouton pour lancer l'analyse
     if st.button("🚀 Lancer l'Audit et l'Analyse de l'appel"):
+        # التحقق من المدخلات بشكل خطي تام
         if not transcription.strip():
-
-
 
 
 
