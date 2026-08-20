@@ -140,7 +140,7 @@ else:
 
     # Configuration Sidebar
     st.sidebar.header("⚙️ Paramètres")
-    MY_DEFAULT_KEY = "AQ.Ab8RN6L8FczZP_RCm0XQIkBCf0OxilGjUXehXiQly-kQQGI8Qg" 
+    MY_DEFAULT_KEY = "key api" 
     
     client_api_key = st.sidebar.text_input(
         "Votre clé API Gemini (Optionnel)", 
