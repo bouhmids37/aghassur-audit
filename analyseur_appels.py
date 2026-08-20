@@ -69,7 +69,7 @@ def lire_credits(username):
                 if line.startswith(f"{username}:"):
                     valeur = line.strip().split(":")
                     if len(valeur) > 1:
-                        return int(valeur[1].strip())
+                        return int(valeur[1]) # ✨ تم إصلاح القراءة هنا valeur[1] بدلاً من valeur بالكامل
     except Exception:
         pass
     return 3
@@ -139,7 +139,7 @@ else:
     st.markdown(f'<div class="subtitle">Connecté en tant que : <b>{username}</b></div>', unsafe_allow_html=True)
     
     # Gestion des crédits
-    credits_restants = lire_credits(username) if username != "admin" else "Illimité"
+    credits_restants = "Illimité" if username == "admin" else lire_credits(username)
     st.sidebar.metric(label="Crédits d'analyse restants", value=str(credits_restants))
     
     if st.sidebar.button("Se déconnecter"):
@@ -150,12 +150,12 @@ else:
 
     # Zone de texte
     st.markdown("### 📝 Collez la transcription de l'appel ci-dessous :")
-    transcription = st.text_area("Insérez le texte complet de l'échange ici...", height=300, placeholder="[00:01] Expert: Bonjour...")
+    transcription = st.text_area("Insérez le texte complet de l'échange ici...", height=300, placeholder="[00:01] Expert: Bonjour...", key="input_transcription")
     
     # Bouton pour lancer l'analyse
     if st.button("🚀 Lancer l'Audit et l'Analyse de l'appel"):
-        # سلسلة التحقق الأولي (بنية مسطحة ومضمونة)
-        texte_valide = bool(transcription.strip())
+        if not transcription.strip():
+
 
 
 
