@@ -67,8 +67,9 @@ def lire_credits(username):
         with open(CREDITS_FILE, "r") as f:
             for line in f:
                 if line.startswith(f"{username}:"):
-                    valeur = line.split(":")[1]
-                    return int(valeur.strip())
+                    valeur = line.strip().split(":")
+                    if len(valeur) > 1:
+                        return int(valeur[1])
     except Exception:
         pass
     return 3
@@ -92,7 +93,7 @@ def modifier_credits(username, nouveau_credit):
     except Exception:
         pass
 
-# 🔒 BASE DE DONNÉES SÉCURISÉE
+# 🔒 BASE DE DONنÉES SÉCURISÉE
 USERS_DB = {
     "admin": {"password": "aghassur2026"},
     "cabinet_tunis": {"password": "tp1234"},
@@ -154,7 +155,7 @@ else:
     # Bouton pour lancer l'analyse
     if st.button("🚀 Lancer l'Audit et l'Analyse de l'appel"):
         if not transcription.strip():
-            st.warning("⚠️ Veuillez coller une transcription avant de lancer l'analyse.")
+
 
 
 
