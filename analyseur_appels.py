@@ -69,7 +69,7 @@ def lire_credits(username):
                 if line.startswith(f"{username}:"):
                     valeur = line.strip().split(":")
                     if len(valeur) > 1:
-                        return int(valeur[1])
+                        return int(valeur[1].strip())
     except Exception:
         pass
     return 3
@@ -139,7 +139,7 @@ else:
     st.markdown(f'<div class="subtitle">Connecté en tant que : <b>{username}</b></div>', unsafe_allow_html=True)
     
     # Gestion des crédits
-    credits_restants = "Illimité" if username == "admin" else lire_credits(username)
+    credits_restants = lire_credits(username) if username != "admin" else "Illimité"
     st.sidebar.metric(label="Crédits d'analyse restants", value=str(credits_restants))
     
     if st.sidebar.button("Se déconnecter"):
@@ -154,7 +154,9 @@ else:
     
     # Bouton pour lancer l'analyse
     if st.button("🚀 Lancer l'Audit et l'Analyse de l'appel"):
-        if not transcription.strip():
+        # سلسلة التحقق الأولي (بنية مسطحة ومضمونة)
+        texte_valide = bool(transcription.strip())
+
 
 
 
