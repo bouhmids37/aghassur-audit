@@ -51,17 +51,10 @@ Prends de la hauteur en tant qu'expert R.G.P.D AGHassur pour donner une conclusi
 - **Raison Métier du Blocage :** [Sélectionne la cause majeure détectée : Flou sur le Reste à Charge / Problème Noémie ou Tiers Payant / Devis non conforme ou pièces manquantes / Client difficile ou réfractaire].
 - **Commentaire Détaillé de Synthèse (R.G.P.D AGHassur) :** [Rédige ici un long paragraphe de synthèse approfondi reprenant les points clés de l'échange. Tu devez impérativement include et commenter les phrases clés d'illustrations].
 - **ALERTES SUR LES RISQUES (Impact sur la Vente & Litige Mutuelle) :** [Alerte le cabinet AGHassur sur l'impact direct des erreurs détectées. Précise si l'erreur commise par l'expert 'altère / plombe définitivement la vente' ou si elle 'génère un litige grave avec la Mutuelle partenaire'].
-- **Décision et Recommandation Finale du R.G.P.D AGHassur :** [Action concrète à mener : Si l'expert a échoué -> Plan de formation ciblé. Si l'expert a bien travaillé -> Validation qualité du conseiller + Transmission immédiate du dossier à un superviseur pour rappel de rétention/sauvetage].
+- **Décision et Recommandation Finale du R.G.P.D AGHassur :** [Action concرète à mener : Si l'expert a échoué -> Plan de formation ciblé. Si l'expert a bien travaillé -> Validation qualité du conseiller + Transmission immédiate du dossier à un superviseur pour rappel de rétention/sauvetage].
 
 Voici la transcription de l'appel complète à analyser :
 """
-
-# ✨ Fonction isolée d'appel API à Groq (Alignement plat et linéaire garanti)
-def appeler_groq_ia(texte_appel):
-    client = OpenAI(base_url="https://groq.com", api_key="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")
-    prompt_final = f"{PROMPT_BASE}\n{texte_appel}"
-    response = client.chat.completions.create(model="llama-3.1-70b-versatile", messages=[{"role": "user", "content": prompt_final}], temperature=0.3)
-    return response.choices.message.content
 
 # 🔒 Base de données des utilisateurs certifiés AGHassur
 USERS_DB = {
@@ -70,7 +63,7 @@ USERS_DB = {
     "client_france": {"password": "agh7500", "credits": 5}
 }
 
-# Initialisation sécurisée
+# Initialisation sécurisée delle variables de session
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 if "user_logged" not in st.session_state:
@@ -90,7 +83,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 1️⃣ نظام الدخول المستقل تماماً
+# 1️⃣ نظام الدخول المستقل تماماً عبر التجميد القاطع
 if not st.session_state.authenticated:
     st.markdown('<div class="main-title">🔐 Connexion — AGHassur Audit IA</div>', unsafe_allow_html=True)
     with st.form("login_form"):
@@ -107,7 +100,7 @@ if not st.session_state.authenticated:
                 st.error("Identifiants incorrects. Veuillez réessayer.")
     st.stop()
 
-# 2️⃣ الواجهة الرئيسية للتطبيق (Alignement linéaire pur sans aucun bloc imbriqué)
+# 2️⃣ الواجهة الرئيسية للتطبيق (تسير في خط مستقيم تماماً وبدون أي أخطاء مسافات)
 user = st.session_state.user_logged
 st.markdown('<div class="main-title">🎙️ AGHassur — Auditeur Vocal IA</div>', unsafe_allow_html=True)
 st.markdown(f'<div class="subtitle">Connecté en tant que : <b>{user}</b></div>', unsafe_allow_html=True)
@@ -120,26 +113,35 @@ if st.sidebar.button("Se déconnecter"):
     st.session_state.analyse_text = None
     st.rerun()
 
-# Formulaire direct sans aucune case de clé API
+# نموذج المدخلات المباشر لـ Groq المجاني
 with st.form("audit_form"):
+    st.markdown("### 🔑 Configuration de la clé API Groq (Gratuite) :")
+    api_key_field = st.text_input(
+        "Entrez votre clé API Groq (commence par gsk_...)", 
+        type="password", 
+        placeholder="Collez votre clé API Groq مجانية هنا..."
+    )
     st.markdown("### 📝 Collez la transcription de l'appel ci-dessous :")
-    transcription_field = st.text_area("Insérez le texte complet de l'échange ici...", height=350, placeholder="[00:01] Expert: Bonjour...")
+    transcription_field = st.text_area("Insérez le texte complet de l'échange ici...", height=300, placeholder="[00:01] Expert: Bonjour...")
     submit_audit = st.form_submit_button("🚀 Lancer l'Audit et l'Analyse de l'appel")
 
-# Logique de traitement plate à 1 seule colonne (Suppression définitive du 'else')
+# المعالجة الخطية الخالية تماماً من تفرعات الـ Else المعلقة بالأقواس
 if submit_audit:
+    api_key_saisie = api_key_field.strip()
     texte_valide = bool(transcription_field.strip())
     credits_valides = bool(user == "admin" or st.session_state.user_credits > 0)
     
-    if not texte_valide:
+    if not api_key_saisie:
+        st.error("❌ Veuillez saisir votre clé API Groq dans la case ci-dessus.")
+    elif not texte_valide:
         st.warning("⚠️ Veuillez coller une transcription avant de lancer l'analyse.")
-    
-    if texte_valide and not credits_valides:
+    elif not credits_valides:
         st.error("❌ Vous n'avez plus de crédits suffisants pour effectuer cette analyse.")
-        
-    if texte_valide and credits_valides:
-        # Exécution directe via la fonction isolée du haut
-        st.session_state.analyse_text = appeler_groq_ia(transcription_field)
+    else:
+        with st.spinner("🧠 L'IA AGHassur (Llama 3.3) analyse l'échange en profondeur..."):
+            # المعالجة الخطية المسطحة لطلب البيانات
+            client = OpenAI(base_url="https://groq.com", api_key=api_key_saisie)
+
 
 
 
