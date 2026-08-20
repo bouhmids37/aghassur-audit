@@ -116,7 +116,7 @@ else:
     st.markdown("### 📝 Collez la transcription de l'appel ci-dessous :")
     transcription = st.text_area("Insérez le texte complet de l'échange ici...", height=300, placeholder="[00:01] Expert: Bonjour...", key="input_transcription")
     
-    # دالة زر البدء المسطحة والآمنة تماماً
+    # معالجة الضغط الفلاتر والتحليل
     if st.button("🚀 Lancer l'Audit et l'Analyse de l'appel"):
         if not transcription.strip():
             st.warning("⚠️ Veuillez coller une transcription avant de lancer l'analyse.")
@@ -125,7 +125,7 @@ else:
         else:
             with st.spinner("🧠 L'IA AGHassur analyse l'échange en profondeur... Veuillez patienter..."):
                 try:
-                    # 🔴 ضع مفتاح الـ API الحقيقي الخاص بك هنا مباشرة مكان الكلمة المكتوبة بالفرنسية
+                    # 🔴 ضع مفتاح الـ API الحقيقي الخاص بك هنا مكان الكلمة المكتوبة بالفرنسية
                     api_key = os.environ.get("GEMINI_API_KEY", "YOUR_GEMINI_API_KEY")
                     genai.configure(api_key=api_key)
                     
