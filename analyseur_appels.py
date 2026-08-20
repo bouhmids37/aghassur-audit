@@ -12,7 +12,7 @@ Analyse cet appel UNIQUE dans sa totalité pour donner un rapport cohérent du d
 
 RÈGLES DE DÉCODAGE DES PERSONNAGES & GESTION DU TRANSFERT :
 1. Le PREMIER interlocuteur qui parle dans le script est TOUJOURS l'Expert / Le Conseiller Commercial.
-2. CONTEXTE DE TRANSFERT DE LIGNE CRUCIAL : Le DEUXIÈME interlocuteur (Interlocuteur 2) est TOUJOURS le Prospect/Client Senior final.
+2. CONTEXTE DE TRANSFERT DE LIGNE CRUCIAL : Le DEUXIÈME interlocuteur (Interlocuteur 2) is TOUJOURS le Prospect/Client Senior final.
 ⚠️ ATTENTION : À cause du transfert de ligne sur Ringover, le nom affiché à côté des répliques de l'interlocuteur 2 peut être erroné. Ignore cette erreur.
 
 CONSIGNE ULTRA-CRUCIALE : IMPLANTATION DES VERBATIMS (PROPOS EXACTS) :
@@ -49,7 +49,7 @@ Prends de la hauteur en tant que R.G.P.D AGHassur pour donner une conclusion cla
 - **Statut Conformité R.G.P.D. (Données de Santé) :** [Analyse si l'expert a respecté la protection des données sensibles : Vérification d'identité, recueil du consentement, absence de fuite d'informations sur les pathologies. Statut : Conforme / Non Conforme avec justification].
 - **Risque de Chute de Contrat (Résiliation / Non-signature) :** [Évalue l'impact au regard des réglementations françaises : Risque Faible, Moyen ou Critique de perte du client lié aux lois Hamon ou Châtel].
 - **Raison Métier du Blocage :** [Sélectionne la cause majeure détectée : Flou sur le Reste à Charge / Problème Noémie ou Tiers Payant / Devis non conforme ou pièces manquantes / Client difficile ou réfractaire].
-- **Commentaire Détaillé de Synthèse (R.G.P.D AGHassur) :** [Rédige ici un long paragraphe de synthèse approfondi reprenant les points clés de l'échange. Tu devez impérativement inclure et commenter les phrases clés d'illustrations].
+- **Commentaire Détaillé de Synthèse (R.G.P.D AGHassur) :** [Rédige ici un long paragraphe de synthèse approfondi reprenant les points clés de l'échange. Tu devez impérativement include et commenter les phrases clés d'illustrations].
 - **ALERTES SUR LES RISQUES (Impact sur la Vente & Litige Mutuelle) :** [Alerte le cabinet AGHassur sur l'impact direct des erreurs détectées. Précise si l'erreur commise par l'expert 'altère / plombe définitivement la vente' ou si elle 'génère un litige grave avec la Mutuelle partenaire'].
 - **Décision et Recommandation Finale du R.G.P.D AGHassur :** [Action concrète à mener : Si l'expert a échoué -> Plan de formation ciblé. Si l'expert a bien travaillé -> Validation qualité du conseiller + Transmission immédiate du dossier à un superviseur pour rappel de rétention/sauvetage].
 
@@ -116,7 +116,7 @@ else:
     st.markdown("### 📝 Collez la transcription de l'appel ci-dessous :")
     transcription = st.text_area("Insérez le texte complet de l'échange ici...", height=300, placeholder="[00:01] Expert: Bonjour...", key="input_transcription")
     
-    # معالجة الضغط الفلاتر والتحليل
+    # معالجة ضغط الفلاتر والتحليل
     if st.button("🚀 Lancer l'Audit et l'Analyse de l'appel"):
         if not transcription.strip():
             st.warning("⚠️ Veuillez coller une transcription avant de lancer l'analyse.")
@@ -124,22 +124,24 @@ else:
             st.error("❌ Vous n'avez plus de crédits suffisants pour effectuer cette analyse.")
         else:
             with st.spinner("🧠 L'IA AGHassur analyse l'échange en profondeur... Veuillez patienter..."):
-                try:
-                    # 🔴 ضع مفتاح الـ API الحقيقي الخاص بك هنا مكان الكلمة المكتوبة بالفرنسية
-                    api_key = os.environ.get("GEMINI_API_KEY", "YOUR_GEMINI_API_KEY")
-                    genai.configure(api_key=api_key)
+                # 🔴 حط مفتاح الـ API الحقيقي الخاص بك هنا مباشرة مكان الكلمة المكتوبة بالفرنسية
+                api_key = os.environ.get("GEMINI_API_KEY", "YOUR_GEMINI_API_KEY")
+                genai.configure(api_key=api_key)
+                
+                model = genai.GenerativeModel("gemini-1.5-pro")
+                prompt_final = f"{PROMPT_BASE}\n{transcription}"
+                
+                response = model.generate_content(prompt_final)
+                st.session_state.analyse_text = response.text
+                
+                if user != "admin":
+                    st.session_state.user_credits -= 1
                     
-                    model = genai.GenerativeModel("gemini-1.5-pro")
-                    prompt_final = f"{PROMPT_BASE}\n{transcription}"
-                    
-                    response = model.generate_content(prompt_final)
-                    st.session_state.analyse_text = response.text
-                    
-                    if user != "admin":
-                        st.session_state.user_credits -= 1
-                        
-                    st.success("✅ Analyse terminée avec succès !")
-                except Exception as e:
+                st.success("✅ Analyse terminée avec succès !")
+
+    # عرض التقرير الناتج المولد بواسطة الذكاء الاصطناعي بأسفل الصفحة
+    if st.session_state.analyse_text:
+        st.markdown("---")
 
 
 
