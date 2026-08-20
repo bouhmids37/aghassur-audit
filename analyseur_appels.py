@@ -49,14 +49,14 @@ Prends de la hauteur en tant que R.G.P.D AGHassur pour donner une conclusion cla
 - **Statut Conformité R.G.P.D. (Données de Santé) :** [Analyse si l'expert a respecté la protection des données sensibles : Vérification d'identité, recueil du consentement, absence de fuite d'informations sur les pathologies. Statut : Conforme / Non Conforme avec justification].
 - **Risque de Chute de Contrat (Résiliation / Non-signature) :** [Évalue l'impact au regard des réglementations françaises : Risque Faible, Moyen ou Critique de perte du client lié aux lois Hamon ou Châtel].
 - **Raison Métier du Blocage :** [Sélectionne la cause majeure détectée : Flou sur le Reste à Charge / Problème Noémie ou Tiers Payant / Devis non conforme ou pièces manquantes / Client difficile ou réfractaire].
-- **Commentaire Détaillé de Synthèse (R.G.P.D AGHassur) :** [Rédige ici un long paragraphe de synthèse approfondi reprenant les points clés de l'échange. Tu devez impérativement inclure et commenter les phrases clés d'illustrations].
+- **Commentaire Détaillé de Synthèse (R.G.P.D AGHassur) :** [Rédige ici un long paragraphe de synthèse approfondi reprenant les points clés de l'échange. Tu devez impérativement include et commenter les phrases clés d'illustrations].
 - **ALERTES SUR LES RISQUES (Impact sur la Vente & Litige Mutuelle) :** [Alerte le cabinet AGHassur sur l'impact direct des erreurs détectées. Précise si l'erreur commise par l'expert 'altère / plombe définitivement la vente' ou si elle 'génère un litige grave avec la Mutuelle partenaire'].
 - **Décision et Recommandation Finale du R.G.P.D AGHassur :** [Action concrète à mener : Si l'expert a échoué -> Plan de formation ciblé. Si l'expert a bien travaillé -> Validation qualité du conseiller + Transmission immédiate du dossier à un superviseur pour rappel de rétention/sauvetage].
 
 Voici la transcription de l'appel complète à analyser :
 """
 
-# 🔒 Système de fichiers local pour sécuriser les crédits (Anti-F5)
+# 🔒 Système de fichiers local pour sécuriser les crédits
 CREDITS_FILE = "aghassur_credits.txt"
 
 def lire_credits(username):
@@ -64,12 +64,11 @@ def lire_credits(username):
         if not os.path.exists(CREDITS_FILE):
             with open(CREDITS_FILE, "w") as f:
                 f.write("cabinet_tunis:3\nclient_france:3\n")
-        
         with open(CREDITS_FILE, "r") as f:
-            lines = f.readlines()
-            for line in lines:
+            for line in f:
                 if line.startswith(f"{username}:"):
-                    return int(line.split(":")[1].strip())
+                    valeur = line.split(":")[1]
+                    return int(valeur.strip())
     except Exception:
         pass
     return 3
@@ -100,7 +99,7 @@ USERS_DB = {
     "client_france": {"password": "agh7500"}
 }
 
-# Initialisation sécurisée des variables d'état (Pour éviter la page blanche)
+# Initialisation sécurisée
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 if "user_logged" not in st.session_state:
@@ -108,7 +107,6 @@ if "user_logged" not in st.session_state:
 if "analyse_text" not in st.session_state:
     st.session_state.analyse_text = None
 
-# Style CSS
 st.markdown("""
     <style>
     .main-title { font-size:32px; font-weight:700; color:#1E3A8A; margin-bottom:5px; text-align:center;}
@@ -121,12 +119,10 @@ st.markdown("""
 # 1️⃣ ÉCRAN DE CONNEXION PRIVÉ
 if not st.session_state.authenticated:
     st.markdown('<div class="main-title">🔐 Connexion — AGHassur Audit IA</div>', unsafe_allow_html=True)
-    
     with st.form("login_form"):
         username_input = st.text_input("Nom d'utilisateur")
         password_input = st.text_input("Mot de passe", type="password")
         submit_login = st.form_submit_button("Se connecter")
-        
         if submit_login:
             if username_input in USERS_DB and USERS_DB[username_input]["password"] == password_input:
                 st.session_state.authenticated = True
@@ -138,7 +134,7 @@ if not st.session_state.authenticated:
 # 2️⃣ INTERFACE PRINCIPALE APRÈS CONNEXION
 else:
     username = st.session_state.user_logged
-    st.markdown(f'<div class="main-title">🎙️ AGHassur — Auditeur Vocal IA</div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-title">🎙️ AGHassur — Auditeur Vocal IA</div>', unsafe_allow_html=True)
     st.markdown(f'<div class="subtitle">Connecté en tant que : <b>{username}</b></div>', unsafe_allow_html=True)
     
     # Gestion des crédits
@@ -151,12 +147,15 @@ else:
         st.session_state.analyse_text = None
         st.rerun()
 
-    # Zone de texte pour coller la transcription
+    # Zone de texte
     st.markdown("### 📝 Collez la transcription de l'appel ci-dessous :")
-    transcription = st.text_area("Insérez le texte complet de l'échange ici...", height=300, placeholder="[00:01] Expert: Bonjour... \n[00:15] Client: Allô oui...")
+    transcription = st.text_area("Insérez le texte complet de l'échange ici...", height=300, placeholder="[00:01] Expert: Bonjour...")
     
     # Bouton pour lancer l'analyse
     if st.button("🚀 Lancer l'Audit et l'Analyse de l'appel"):
+        if not transcription.strip():
+            st.warning("⚠️ Veuillez coller une transcription avant de lancer l'analyse.")
+
 
 
 
