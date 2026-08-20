@@ -27,7 +27,7 @@ Génère un rapport contenant obligatoirement les sections suivantes :
 Dudique chaque ligne et chaque mot prononcé par l'Expert (Interlocuteur 1). Repère la moindre faille sur le plan commercial, technique et métier (Flou Reste à Charge, mauvaise explication Noémie/Tiers Payant, manquement au devoir de conseil, non-respect de la grille tarifaire).
 Format strict attendu :
 - [Horodatage] - Erreur détectée. Propos exacts de l'expert : "[Citer sa phrase exacte ici]". Analyse de l'impact : [Expliquer pourquoi c'est une erreur].
-⚠️ NOTE D'ÉQUITÉ QUANT AUX CLIENTS DIFFICILES : Si après analyse ultra-poussée du texte, tu constates que l'expert n'a commis aucune erreur métier ou technique, qu'il a été irréprochable et que le blocage vient uniquement d'un client hermémentique, mentionne explicitement : 'Aucune erreur technique ou commerciale détectée. L'expert a parfaitement respecté le cahier des charges.'
+⚠️ NOTE D'ÉQUITÉ QUANT AUX CLIENTS DIFFICILES : Si après analyse ultra-poussée du texte, tu constates que l'expert n'a commis aucune erreur métier ou technique, qu'il a été irréprochable et que le blocage vient uniquement d'un client hermétique, mentionne explicitement : 'Aucune erreur technique ou commerciale détectée. L'expert a parfaitement respecté le cahier des charges.'
 
 ### 2. Causes de Refus, Objections et Profil du Client Final (Interlocuteur 2) (Avec Horodatage)
 Base-toi uniquement sur les propos du deuxième interlocuteur (le client senior réel) pour lister ses blocages.
@@ -116,29 +116,31 @@ else:
     st.markdown("### 📝 Collez la transcription de l'appel ci-dessous :")
     transcription = st.text_area("Insérez le texte complet de l'échange ici...", height=300, placeholder="[00:01] Expert: Bonjour...", key="input_transcription")
     
+    # تنفيذ الفحص والتحليل ببنية خطية مسطحة تماماً تمنع الـ SyntaxError
     if st.button("🚀 Lancer l'Audit et l'Analyse de l'appel"):
+        # جلب مفتاح الـ API بشكل فوري ومباشر
+        api_key = os.environ.get("GEMINI_API_KEY", "YOUR_GEMINI_API_KEY")
+        
         if not transcription.strip():
             st.warning("⚠️ Veuillez coller une transcription avant de lancer l'analyse.")
         elif user != "admin" and st.session_state.user_credits <= 0:
             st.error("❌ Vous n'avez plus de crédits suffisants pour effectuer cette analyse.")
+        elif api_key in ["YOUR_GEMINI_API_KEY", "", "VOTRE_CLE_API_ICI"]:
+            st.error("❌ مفتاح الـ API الخاص بجوجل غير مضبوط! يرجى وضع المفتاح في السطر 116 بدلاً من 'YOUR_GEMINI_API_KEY'.")
         else:
-            # 🔍 التحقق الذكي من وجود مفتاح الـ API
-            api_key = os.environ.get("GEMINI_API_KEY", "YOUR_GEMINI_API_KEY")
-            
-            if api_key in ["YOUR_GEMINI_API_KEY", "", "VOTRE_CLE_API_ICI"]:
-                st.error("❌ مفتاح الـ API الخاص بجوجل غير مضبوط! يرجى قراءة الخطوات أسفل الصفحة لتفعيل التطبيق.")
-            else:
-                with st.spinner("🧠 L'IA AGHassur analyse l'échange en profondeur... Veuillez patienter..."):
-                    try:
-                        genai.configure(api_key=api_key)
-                        model = genai.GenerativeModel("gemini-1.5-pro")
-                        prompt_final = f"{PROMPT_BASE}\n{transcription}"
-                        
-                        response = model.generate_content(prompt_final)
-                        st.session_state.analyse_text = response.text
-                        
-                        if user != "admin":
-                            st.session_state.user_credits -= 1
+            with st.spinner("🧠 L'IA AGHassur analyse l'échange en profondeur... Veuillez patienter..."):
+                genai.configure(api_key=api_key)
+                model = genai.GenerativeModel("gemini-1.5-pro")
+                prompt_final = f"{PROMPT_BASE}\n{transcription}"
+                
+                # تنفيذ جلب التقرير
+                response = model.generate_content(prompt_final)
+                st.session_state.analyse_text = response.text
+                
+                if user != "admin":
+                    st.session_state.user_credits -= 1
+                    
+
 
 
 
