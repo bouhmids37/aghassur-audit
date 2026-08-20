@@ -19,7 +19,7 @@ CONSIGNE ULTRA-CRUCIALE : IMPLANTATION DES VERBATIMS (PROPOS EXACTS) :
 Tu devez impérativement extraire et CITER LE TEXTE EXACT (Verbatim entre guillemets) dit par l'expert ou le client pour appuyer tes conclusions dans chaque section, en particulier dans les erreurs, les objections et les commentaires du responsable.
 
 CONSIGNE ABSOLUE SUR LE TEMPS (TIMESTAMPS) :
-Tu dois lister le temps exact (Timestamp comme [01:23] or [04:12]) extrait du texte pour TOUTES LES SECTIONS du rapport. Il est interdit de rédiger une observation sans son horodatage précis.
+Tu dois lister le temps exact (Timestamp comme [01:23] ou [04:12]) extrait du texte pour TOUTES LES SECTIONS du rapport. Il est interdit de rédiger une observation sans son horodatage précis.
 
 Génère un rapport contenant obligatoirement les sections suivantes :
 
@@ -129,7 +129,7 @@ with st.form("audit_form"):
     )
     submit_audit = st.form_submit_button("🚀 Lancer l'Audit et l'Analyse de l'appel")
 
-# المعالجة الخطية المسطحة تماماً والخالية من الـ Try/Except المتداخلة لضمان التثبيت
+# المعالجة الخطية المسطحة تماماً والخالية من أي تداخلات أو أخطاء مسافات
 if submit_audit:
     api_key_saisie = api_key_field.strip()
     texte_valide = bool(transcription_field.strip())
@@ -142,12 +142,13 @@ if submit_audit:
     elif not credits_valides:
         st.error("❌ Vous n'avez plus de crédits suffisants pour effectuer cette analyse.")
     else:
-        # الربط الخطي المباشر والآمن بسيرفرات معالجة Groq الفورية
+        # إعداد الاتصال بسيرفرات Groq
         client = OpenAI(
             base_url="https://groq.com",
             api_key=api_key_saisie
         )
         
+
 
                 )
 
