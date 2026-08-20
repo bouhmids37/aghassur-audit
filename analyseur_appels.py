@@ -5,7 +5,7 @@ import os
 # Configuration de la page
 st.set_page_config(page_title="AGHassur - Auditeur Vocal IA", layout="wide")
 
-# 🔒 LE PROMPT D'ORIGINE COMPLET ISOLÉ EN HAUT POUR ÉVITER TOUT BUG DE SYNTAXE
+# 🔒 LE PROMPT D'ORIGINE COMPLET ISOLÉ EN HAUT
 PROMPT_BASE = """Tu es un expert en audit de vente d'assurances santé (Spécialiste Mutuelle Senior en France) agissant pour le cabinet AGHassur.
 Rédige TOUTE ton analyse en français de manière extrêmement professionnelle, structurée, scannable et TRÈS APPROFONDIE.
 Analyse cet appel UNIQUE dans sa totalité pour donner un rapport cohérent du début à la fin.
@@ -56,53 +56,24 @@ Prends de la hauteur en tant que R.G.P.D AGHassur pour donner une conclusion cla
 Voici la transcription de l'appel complète à analyser :
 """
 
-# 🔒 Système de fichiers local pour sécuriser les crédits (Anti-F5)
-CREDITS_FILE = "aghassur_credits.txt"
-
-def lire_credits(username):
-    if not os.path.exists(CREDITS_FILE):
-        with open(CREDITS_FILE, "w") as f:
-            f.write("cabinet_tunis:3\nclient_france:3\n")
-    with open(CREDITS_FILE, "r") as f:
-        lines = f.readlines()
-        for line in lines:
-            if line.startswith(f"{username}:"):
-                parts = line.strip().split(":")
-                if len(parts) > 1:
-                    return int(parts[1])
-    return 0
-
-def modifier_credits(username, nouveau_credit):
-    lines = []
-    if os.path.exists(CREDITS_FILE):
-        with open(CREDITS_FILE, "r") as f:
-            lines = f.readlines()
-    with open(CREDITS_FILE, "w") as f:
-        trouve = False
-        for line in lines:
-            if line.startswith(f"{username}:"):
-                f.write(f"{username}:{nouveau_credit}\n")
-                trouve = True
-            else:
-                f.write(line)
-        if not trouve and username != "admin":
-            f.write(f"{username}:{nouveau_credit}\n")
-
 # 🔒 Base de données des utilisateurs certifiés AGHassur
 USERS_DB = {
-    "admin": {"password": "aghassur2026", "credits": 99999},
-    "cabinet_tunis": {"password": "tp1234", "credits": 3},
-    "client_france": {"password": "agh7500", "credits": 3}
+    "admin": {"password": "aghassur2026", "credits": "Illimité"},
+    "cabinet_tunis": {"password": "tp1234", "credits": 5},
+    "client_france": {"password": "agh7500", "credits": 5}
 }
 
+# Initialisation sécurisée
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 if "user_logged" not in st.session_state:
     st.session_state.user_logged = ""
 if "analyse_text" not in st.session_state:
     st.session_state.analyse_text = None
+if "user_credits" not in st.session_state:
+    st.session_state.user_credits = 0
 
-# Style CSS épuré d'origine
+# Style CSS
 st.markdown("""
     <style>
     .main-title { font-size:32px; font-weight:700; color:#1E3A8A; margin-bottom:5px; text-align: center; }
@@ -123,18 +94,18 @@ if not st.session_state.authenticated:
             if username in USERS_DB and USERS_DB[username]["password"] == password:
                 st.session_state.authenticated = True
                 st.session_state.user_logged = username
+                st.session_state.user_credits = USERS_DB[username]["credits"]
                 st.rerun()
             else:
                 st.error("Identifiants incorrects. Veuillez réessayer.")
 
-# 2️⃣ INTERFACE PRINCIPALE (البلاصة متاع المكالمة والتحليل مربوط بالذكاء الاصطناعي 100%)
+# 2️⃣ INTERFACE PRINCIPALE
 else:
     user = st.session_state.user_logged
     st.markdown('<div class="main-title">🎙️ AGHassur — Auditeur Vocal IA</div>', unsafe_allow_html=True)
     st.markdown(f'<div class="subtitle">Connecté en tant que : <b>{user}</b></div>', unsafe_allow_html=True)
     
-    credits_restants = "Illimité" if user == "admin" else lire_credits(user)
-    st.sidebar.metric(label="Crédits d'analyse restants", value=str(credits_restants))
+    st.sidebar.metric(label="Crédits d'analyse restants", value=str(st.session_state.user_credits))
     
     if st.sidebar.button("Se déconnecter"):
         st.session_state.authenticated = False
@@ -145,10 +116,31 @@ else:
     st.markdown("### 📝 Collez la transcription de l'appel ci-dessous :")
     transcription = st.text_area("Insérez le texte complet de l'échange ici...", height=300, placeholder="[00:01] Expert: Bonjour...", key="input_transcription")
     
-    # تحضير المتغيرات والفلاتر بشكل خطي تام
-    bouton_presse = st.button("🚀 Lancer l'Audit et l'Analyse de l'appel")
-    texte_existe = bool(transcription.strip())
-    credits_ok = bool(user == "admin" or (isinstance(credits_restants, int) and credits_restants > 0))
+    # دالة زر البدء المسطحة والآمنة تماماً
+    if st.button("🚀 Lancer l'Audit et l'Analyse de l'appel"):
+        if not transcription.strip():
+            st.warning("⚠️ Veuillez coller une transcription avant de lancer l'analyse.")
+        elif user != "admin" and st.session_state.user_credits <= 0:
+            st.error("❌ Vous n'avez plus de crédits suffisants pour effectuer cette analyse.")
+        else:
+            with st.spinner("🧠 L'IA AGHassur analyse l'échange en profondeur... Veuillez patienter..."):
+                try:
+                    # 🔴 ضع مفتاح الـ API الحقيقي الخاص بك هنا مباشرة مكان الكلمة المكتوبة بالفرنسية
+                    api_key = os.environ.get("GEMINI_API_KEY", "YOUR_GEMINI_API_KEY")
+                    genai.configure(api_key=api_key)
+                    
+                    model = genai.GenerativeModel("gemini-1.5-pro")
+                    prompt_final = f"{PROMPT_BASE}\n{transcription}"
+                    
+                    response = model.generate_content(prompt_final)
+                    st.session_state.analyse_text = response.text
+                    
+                    if user != "admin":
+                        st.session_state.user_credits -= 1
+                        
+                    st.success("✅ Analyse terminée avec succès !")
+                except Exception as e:
+
 
 
 
