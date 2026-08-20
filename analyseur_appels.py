@@ -36,7 +36,7 @@ Format strict attendu :
 
 ### 3. Solutions de Traitement & Plan d'Action Correctif (Mise en correspondance temporelle)
 Donne pour chaque minute d'erreur de l'expert ou d'objection du client final, le script exact ou la posture idéale attendue.
-Si l'expert a tout bien fait face à un client bloqué, propose des techniques de contournement psychologique ou des offres alternatives adaptées aux profils seniors complexes.
+Si l'expert a tout bien fait face à un client bloqué, propose des techniques de contournement psychologique ou des offres alternatives adaptées aux profiles seniors complexes.
 
 ### 4. Tableau de Comparaison des Garanties
 Génère un tableau comparatif au format Markdown strict basé uniquement sur les données réelles de cet appel :
@@ -138,24 +138,22 @@ else:
     
     # Gestion des crédits pour l'affichage
     credits_restants = "Illimité" if username == "admin" else lire_credits(username)
-    st.sidebar.metric(label="Crédits d'analyse restants", value=credits_restants)
+    st.sidebar.metric(label="Crédits d'analyse restants", value=str(credits_restants))
     
     if st.sidebar.button("Se déconnecter"):
         st.session_state.authenticated = False
         st.session_state.user_logged = ""
         st.rerun()
 
-    # 📍 البلاصة الي تلصق فاها المكالمة (Zone de texte pour la transcription)
+    # Zone de texte pour coller la transcription
     st.markdown("### 📝 Collez la transcription de l'appel ci-dessous :")
     transcription = st.text_area("Insérez le texte complet de l'échange ici...", height=300, placeholder="[00:01] Expert: Bonjour... \n[00:15] Client: Allô oui...")
-
-    # Configuration de la clé API Gemini (À définir idéalement dans vos variables d'environnement)
-    # os.environ["GEMINI_API_KEY"] = "VOTRE_CLE_API_ICI"
     
-    # 🚀 زر بدء التحليل
+    # Bouton pour lancer l'analyse
     if st.button("🚀 Lancer l'Audit et l'Analyse de l'appel"):
         if not transcription.strip():
-
+            st.warning("⚠️ Veuillez coller une transcription avant de lancer l'analyse.")
+        elif username != "admin" and credits_restants <= 0:
 
 
 
