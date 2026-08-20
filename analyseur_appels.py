@@ -1,4 +1,4 @@
-ٍimport streamlit as st
+import streamlit as st
 import google.generativeai as genai
 import os
 
@@ -133,7 +133,7 @@ if not st.session_state.authenticated:
             else:
                 st.error("❌ Identifiants incorrects. Veuillez contacter le R.G.P.D AGHassur.")
 
-# 2️⃣ INTERFACE RECHERCHE & AUDIT PROFESSIONNELLE (تم إصلاح البلوك والكلمات المقطوعة هنا)
+# 2️⃣ INTERFACE RECHERCHE & AUDIT PROFESSIONNELLE
 else:
     current_user = st.session_state.user_logged
     user_credits = 99999 if current_user == "admin" else lire_credits(current_user)
@@ -154,6 +154,9 @@ else:
     if st.sidebar.button("🚪 Se déconnecter"):
         st.session_state.authenticated = False
         st.session_state.user_logged = ""
+        st.session_state.analyse_text = None
+        st.rerun()
+
 
 
 
