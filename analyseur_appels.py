@@ -1,6 +1,6 @@
 import streamlit as st
-import google.generativeai as genai
 import os
+from openai import OpenAI
 
 # Configuration de la page
 st.set_page_config(page_title="AGHassur - Auditeur Vocal IA", layout="wide")
@@ -63,7 +63,7 @@ USERS_DB = {
     "client_france": {"password": "agh7500", "credits": 5}
 }
 
-# Initialisation sécurisée
+# Initialisation sécurisée delle variables de session
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 if "user_logged" not in st.session_state:
@@ -83,7 +83,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 1️⃣ ÉCRAN DE CONNEXION PRIVÉ
+# 1️⃣ نظام الدخول المستقل تماماً
 if not st.session_state.authenticated:
     st.markdown('<div class="main-title">🔐 Connexion — AGHassur Audit IA</div>', unsafe_allow_html=True)
     with st.form("login_form"):
@@ -100,7 +100,7 @@ if not st.session_state.authenticated:
                 st.error("Identifiants incorrects. Veuillez réessayer.")
     st.stop()
 
-# 2️⃣ INTERFACE PRINCIPALE (Structure strictement linéaire sans bloc 'else' pour éviter les bugs)
+# 2️⃣ الواجهة الرئيسية للتطبيق
 user = st.session_state.user_logged
 st.markdown('<div class="main-title">🎙️ AGHassur — Auditeur Vocal IA</div>', unsafe_allow_html=True)
 st.markdown(f'<div class="subtitle">Connecté en tant que : <b>{user}</b></div>', unsafe_allow_html=True)
@@ -113,13 +113,13 @@ if st.sidebar.button("Se déconnecter"):
     st.session_state.analyse_text = None
     st.rerun()
 
-# Formulaire pour sécuriser la clé et la transcription
+# النموذج الآمن لإدخال البيانات والتحليل عبر Groq
 with st.form("audit_form"):
-    st.markdown("### 🔑 Configuration de la clé API Google Gemini :")
+    st.markdown("### 🔑 Configuration de la clé API Groq :")
     api_key_field = st.text_input(
-        "Entrez votre clé API Gemini (Copiez le code depuis Google AI Studio)", 
+        "Entrez votre clé API Groq (commence par gsk_...)", 
         type="password", 
-        placeholder="Collez votre clé API Gemini ici (commence par AQ)..."
+        placeholder="Collez votre clé API Groq هنا..."
     )
     st.markdown("### 📝 Collez la transcription de l'appel ci-dessous :")
     transcription_field = st.text_area(
@@ -129,28 +129,26 @@ with st.form("audit_form"):
     )
     submit_audit = st.form_submit_button("🚀 Lancer l'Audit et l'Analyse de l'appel")
 
-# Logique de traitement linéaire et plate
+# المعالجة الخطية المسطحة والآمنة
 if submit_audit:
     api_key_saisie = api_key_field.strip()
     texte_valide = bool(transcription_field.strip())
     credits_valides = bool(user == "admin" or st.session_state.user_credits > 0)
     
     if not api_key_saisie:
-        st.error("❌ Veuillez saisir votre clé API Gemini dans la case ci-dessus avant de lancer l'analyse.")
-    
-    if api_key_saisie and not texte_valide:
+        st.error("❌ Veuillez saisir votre clé API Groq dans la case ci-dessus.")
+    elif not texte_valide:
         st.warning("⚠️ Veuillez coller une transcription avant de lancer l'analyse.")
-        
-    if api_key_saisie and texte_valide and not credits_valides:
+    elif not credits_valides:
         st.error("❌ Vous n'avez plus de crédits suffisants pour effectuer cette analyse.")
-        
-    if api_key_saisie and texte_valide and credits_valides:
-        genai.configure(api_key=api_key_saisie)
-
-
-
-
-
+    else:
+        with st.spinner("🧠 L'IA AGHassur (Llama 3.1) analyse l'échange en profondeur..."):
+            try:
+                # ربط فوري بالمفتاح المكتوب بيدك في الواجهة
+                client = OpenAI(
+                    base_url="https://groq.com",
+                    api_key=api_key_saisie
+                )
 
 
 
