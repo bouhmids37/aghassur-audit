@@ -49,7 +49,7 @@ Prends de la hauteur en tant que R.G.P.D AGHassur pour donner une conclusion cla
 - **Statut Conformité R.G.P.D. (Données de Santé) :** [Analyse si l'expert a respecté la protection des données sensibles : Vérification d'identité, recueil du consentement, absence de fuite d'informations sur les pathologies. Statut : Conforme / Non Conforme avec justification].
 - **Risque de Chute de Contrat (Résiliation / Non-signature) :** [Évalue l'impact au regard des réglementations françaises : Risque Faible, Moyen ou Critique de perte du client lié aux lois Hamon ou Châtel].
 - **Raison Métier du Blocage :** [Sélectionne la cause majeure détectée : Flou sur le Reste à Charge / Problème Noémie ou Tiers Payant / Devis non conforme ou pièces manquantes / Client difficile ou réfractaire].
-- **Commentaire Détaillé de Synthèse (R.G.P.D AGHassur) :** [Rédige ici un long paragraphe de synthèse approfondi reprenant les points clés de l'échange. Tu devez impérativement include et commenter les phrases clés d'illustrations].
+- **Commentaire Détaillé de Synthèse (R.G.P.D AGHassur) :** [Rédige ici un long paragraphe de synthèse approfondi reprenant les points clés de l'échange. Tu devez impérativement inclure et commenter les phrases clés d'illustrations].
 - **ALERTES SUR LES RISQUES (Impact sur la Vente & Litige Mutuelle) :** [Alerte le cabinet AGHassur sur l'impact direct des erreurs détectées. Précise si l'erreur commise par l'expert 'altère / plombe définitivement la vente' ou si elle 'génère un litige grave avec la Mutuelle partenaire'].
 - **Décision et Recommandation Finale du R.G.P.D AGHassur :** [Action concrète à mener : Si l'expert a échoué -> Plan de formation ciblé. Si l'expert a bien travaillé -> Validation qualité du conseiller + Transmission immédiate du dossier à un superviseur pour rappel de rétention/sauvetage].
 
@@ -67,7 +67,7 @@ def lire_credits(username):
         lines = f.readlines()
         for line in lines:
             if line.startswith(f"{username}:"):
-                return int(line.split(":")[1].strip())
+                return int(line.split(":").strip())
     return 0
 
 def modifier_credits(username, nouveau_credit):
@@ -86,13 +86,11 @@ def modifier_credits(username, nouveau_credit):
         if not trouve and username != "admin":
             f.write(f"{username}:{nouveau_credit}\n")
 
-# 🔒 Base de données des utilisateurs certifiés AGHassur
+# 🔒 Base de données des utilisateurs certifiés AGHassur (تم إصلاح الفاصلة هوني)
 USERS_DB = {
     "admin": {"password": "aghassur2026", "credits": 99999},
     "cabinet_tunis": {"password": "tp1234", "credits": 3},
-   "client_france": {"password": "agh7500", "credits": 3}
-    "tele_call": {"password": "pass_tele2026", "credits": 3}
-
+    "client_france": {"password": "agh7500", "credits": 3}
 }
 
 if "authenticated" not in st.session_state:
@@ -154,7 +152,6 @@ else:
         st.session_state.authenticated = False
         st.session_state.user_logged = ""
         st.session_state.analyse_text = None
-        st.rerun()
 
 
 
