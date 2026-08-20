@@ -5,7 +5,7 @@ import os
 # Configuration de la page
 st.set_page_config(page_title="AGHassur - Auditeur Vocal IA", layout="wide")
 
-# 🔒 LE PROMPT D'ORIGINE COMPLET ISOLÉ EN HAUT POUR ÉVITER TOUT BUG DE SYNTAXE
+# 🔒 LE PROMPT D'ORIGINE COMPLET ISOLÉ EN HAUT
 PROMPT_BASE = """Tu es un expert en audit de vente d'assurances santé (Spécialiste Mutuelle Senior en France) agissant pour le cabinet AGHassur.
 Rédige TOUTE ton analyse en français de manière extrêmement professionnelle, structurée, scannable et TRÈS APPROFONDIE.
 Analyse cet appel UNIQUE dans sa totalité pour donner un rapport cohérent du début à la fin.
@@ -36,7 +36,7 @@ Format strict attendu :
 
 ### 3. Solutions de Traitement & Plan d'Action Correctif (Mise en correspondance temporelle)
 Donne pour chaque minute d'erreur de l'expert ou d'objection du client final, le script exact ou la posture idéale attendue.
-Si l'expert a tout bien fait face à un client bloqué, propose des techniques de contournement psychologique ou des offres alternatives adaptées aux profiles seniors complexes.
+Si l'expert a tout bien fait face à un client bloqué, propose des techniques de contournement psychologique ou des offres alternatives adaptés aux profiles seniors complexes.
 
 ### 4. Tableau de Comparaison des Garanties
 Génère un tableau comparatif au format Markdown strict basé uniquement sur les données réelles de cet appel :
@@ -60,42 +60,47 @@ Voici la transcription de l'appel complète à analyser :
 CREDITS_FILE = "aghassur_credits.txt"
 
 def lire_credits(username):
-    if not os.path.exists(CREDITS_FILE):
-        with open(CREDITS_FILE, "w") as f:
-            f.write("cabinet_tunis:3\nclient_france:3\n")
-    
-    with open(CREDITS_FILE, "r") as f:
-        lines = f.readlines()
-        for line in lines:
-            if line.startswith(f"{username}:"):
-                return int(line.split(":")[1].strip())
-                
-    modifier_credits(username, 3)
+    try:
+        if not os.path.exists(CREDITS_FILE):
+            with open(CREDITS_FILE, "w") as f:
+                f.write("cabinet_tunis:3\nclient_france:3\n")
+        
+        with open(CREDITS_FILE, "r") as f:
+            lines = f.readlines()
+            for line in lines:
+                if line.startswith(f"{username}:"):
+                    return int(line.split(":")[1].strip())
+    except Exception:
+        pass
     return 3
 
 def modifier_credits(username, nouveau_credit):
-    lines = []
-    if os.path.exists(CREDITS_FILE):
-        with open(CREDITS_FILE, "r") as f:
-            lines = f.readlines()
-    with open(CREDITS_FILE, "w") as f:
-        trouve = False
-        for line in lines:
-            if line.startswith(f"{username}:"):
+    try:
+        lines = []
+        if os.path.exists(CREDITS_FILE):
+            with open(CREDITS_FILE, "r") as f:
+                lines = f.readlines()
+        with open(CREDITS_FILE, "w") as f:
+            trouve = False
+            for line in lines:
+                if line.startswith(f"{username}:"):
+                    f.write(f"{username}:{nouveau_credit}\n")
+                    trouve = True
+                else:
+                    f.write(line)
+            if not trouve and username != "admin":
                 f.write(f"{username}:{nouveau_credit}\n")
-                trouve = True
-            else:
-                f.write(line)
-        if not trouve and username != "admin":
-            f.write(f"{username}:{nouveau_credit}\n")
+    except Exception:
+        pass
 
-# 🔒 BASE DE DONNÉES SÉCURISÉE ET PARFAITEMENT SÉPARÉE
+# 🔒 BASE DE DONNÉES SÉCURISÉE
 USERS_DB = {
     "admin": {"password": "aghassur2026"},
     "cabinet_tunis": {"password": "tp1234"},
     "client_france": {"password": "agh7500"}
 }
 
+# Initialisation sécurisée des variables d'état (Pour éviter la page blanche)
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 if "user_logged" not in st.session_state:
@@ -103,7 +108,7 @@ if "user_logged" not in st.session_state:
 if "analyse_text" not in st.session_state:
     st.session_state.analyse_text = None
 
-# Style CSS épuré d'origine
+# Style CSS
 st.markdown("""
     <style>
     .main-title { font-size:32px; font-weight:700; color:#1E3A8A; margin-bottom:5px; text-align:center;}
@@ -118,14 +123,14 @@ if not st.session_state.authenticated:
     st.markdown('<div class="main-title">🔐 Connexion — AGHassur Audit IA</div>', unsafe_allow_html=True)
     
     with st.form("login_form"):
-        username = st.text_input("Nom d'utilisateur")
-        password = st.text_input("Mot de passe", type="password")
+        username_input = st.text_input("Nom d'utilisateur")
+        password_input = st.text_input("Mot de passe", type="password")
         submit_login = st.form_submit_button("Se connecter")
         
         if submit_login:
-            if username in USERS_DB and USERS_DB[username]["password"] == password:
+            if username_input in USERS_DB and USERS_DB[username_input]["password"] == password_input:
                 st.session_state.authenticated = True
-                st.session_state.user_logged = username
+                st.session_state.user_logged = username_input
                 st.rerun()
             else:
                 st.error("Identifiants incorrects. Veuillez réessayer.")
@@ -136,13 +141,14 @@ else:
     st.markdown(f'<div class="main-title">🎙️ AGHassur — Auditeur Vocal IA</div>', unsafe_allow_html=True)
     st.markdown(f'<div class="subtitle">Connecté en tant que : <b>{username}</b></div>', unsafe_allow_html=True)
     
-    # Gestion des crédits pour l'affichage
+    # Gestion des crédits
     credits_restants = "Illimité" if username == "admin" else lire_credits(username)
     st.sidebar.metric(label="Crédits d'analyse restants", value=str(credits_restants))
     
     if st.sidebar.button("Se déconnecter"):
         st.session_state.authenticated = False
         st.session_state.user_logged = ""
+        st.session_state.analyse_text = None
         st.rerun()
 
     # Zone de texte pour coller la transcription
@@ -151,9 +157,6 @@ else:
     
     # Bouton pour lancer l'analyse
     if st.button("🚀 Lancer l'Audit et l'Analyse de l'appel"):
-        if not transcription.strip():
-            st.warning("⚠️ Veuillez coller une transcription avant de lancer l'analyse.")
-        elif username != "admin" and credits_restants <= 0:
 
 
 
