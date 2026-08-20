@@ -60,19 +60,17 @@ Voici la transcription de l'appel complète à analyser :
 CREDITS_FILE = "aghassur_credits.txt"
 
 def lire_credits(username):
-    # إنشاء الملف إذا لم يكن موجوداً
     if not os.path.exists(CREDITS_FILE):
         with open(CREDITS_FILE, "w") as f:
             f.write("cabinet_tunis:3\nclient_france:3\n")
     
-    # قراءة الأرصدة المتوفرة
     with open(CREDITS_FILE, "r") as f:
         lines = f.readlines()
         for line in lines:
             if line.startswith(f"{username}:"):
                 return int(line.split(":")[1].strip())
                 
-    # ✨ تعديل ذكي: إذا كان المستخدم جديداً ومسجلاً في الكود ولم يُذكر في الملف، نمنحه 3 محاولات تلقائياً ونحفظها
+    # Si l'utilisateur est valide mais absent du fichier texte, on l'initialise à 3
     modifier_credits(username, 3)
     return 3
 
@@ -92,11 +90,11 @@ def modifier_credits(username, nouveau_credit):
         if not trouve and username != "admin":
             f.write(f"{username}:{nouveau_credit}\n")
 
-# 🔒 قاعدة بيانات المستخدمين: يمكنك الآن تعديلها أو زيادة أي مستخدم جديد هنا مباشرة وبكل أمان!
+# 🔒 BASE DE DONNÉES SÉCURISÉE ET PARFAITEMENT ALIGNÉE
 USERS_DB = {
-    "admin": {"password": "aghassur2026", "credits": 99999},
-    "cabinet_tunis": {"password": "tp1234", "credits": 3},
-    "client_france": {"password": "agh7500", "credits": 3}
+    "admin": {"password": "aghassur2026"},
+    "cabinet_tunis": {"password": "tp1234"},
+    "client_france": {"password": "agh7500"}
 }
 
 if "authenticated" not in st.session_state:
@@ -151,6 +149,11 @@ else:
     client_api_key = st.sidebar.text_input(
         "Votre clé API Gemini (Optionnel)", 
         type="password",
+        placeholder="Laissez vide pour utiliser la clé par défaut"
+    )
+    
+    if st.sidebar.button("🚪 Se déconnecter"):
+        st.session_state.authenticated = False
 
 
 
