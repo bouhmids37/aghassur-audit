@@ -1,4 +1,4 @@
-import streamlit as st
+ٍimport streamlit as st
 import google.generativeai as genai
 import os
 
@@ -68,9 +68,8 @@ def lire_credits(username):
         lines = f.readlines()
         for line in lines:
             if line.startswith(f"{username}:"):
-                return int(line.split(":")[1].strip())
+                return int(line.split(":").strip())
                 
-    # Si l'utilisateur est valide mais absent du fichier texte, on l'initialise à 3
     modifier_credits(username, 3)
     return 3
 
@@ -90,7 +89,7 @@ def modifier_credits(username, nouveau_credit):
         if not trouve and username != "admin":
             f.write(f"{username}:{nouveau_credit}\n")
 
-# 🔒 BASE DE DONNÉES SÉCURISÉE ET PARFAITEMENT ALIGNÉE
+# 🔒 BASE DE DONNÉES SÉCURISÉE ET PARFAITEMENT SÉPARÉE
 USERS_DB = {
     "admin": {"password": "aghassur2026"},
     "cabinet_tunis": {"password": "tp1234"},
@@ -134,7 +133,7 @@ if not st.session_state.authenticated:
             else:
                 st.error("❌ Identifiants incorrects. Veuillez contacter le R.G.P.D AGHassur.")
 
-# 2️⃣ INTERFACE RECHERCHE & AUDIT PROFESSIONNELLE
+# 2️⃣ INTERFACE RECHERCHE & AUDIT PROFESSIONNELLE (تم إصلاح البلوك والكلمات المقطوعة هنا)
 else:
     current_user = st.session_state.user_logged
     user_credits = 99999 if current_user == "admin" else lire_credits(current_user)
@@ -154,6 +153,8 @@ else:
     
     if st.sidebar.button("🚪 Se déconnecter"):
         st.session_state.authenticated = False
+        st.session_state.user_logged = ""
+
 
 
 
