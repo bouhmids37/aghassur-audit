@@ -93,7 +93,7 @@ def modifier_credits(username, nouveau_credit):
     except Exception:
         pass
 
-# 🔒 BASE DE DONنÉES SÉCURISÉE
+# 🔒 BASE DE DONNÉES SÉCURISÉE
 USERS_DB = {
     "admin": {"password": "aghassur2026"},
     "cabinet_tunis": {"password": "tp1234"},
@@ -155,6 +155,7 @@ else:
     # Bouton pour lancer l'analyse
     if st.button("🚀 Lancer l'Audit et l'Analyse de l'appel"):
         if not transcription.strip():
+
 
 
 
