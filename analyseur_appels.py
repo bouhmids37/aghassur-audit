@@ -56,10 +56,9 @@ Prends de la hauteur en tant qu'expert R.G.P.D AGHassur pour donner une conclusi
 Voici la transcription de l'appel complète à analyser :
 """
 
-# ✨ دالة المعالجة المباشرة والمشحونة بالمفتاح المجاني الجديد والمستقر 100% في سطر واحد
+# ✨ Fonction isolée d'appel API à Groq (Alignement plat et linéaire garanti)
 def appeler_groq_ia(texte_appel):
-    # 🔑 تم تثبيت مفتاح مجاني خاص ومفتوح الحصة تماماً للعمل الفوري بدون تشنج
-    client = OpenAI(base_url="https://groq.com", api_key=os.environ.get("GROQ_API_KEY", "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"))
+    client = OpenAI(base_url="https://groq.com", api_key="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")
     prompt_final = f"{PROMPT_BASE}\n{texte_appel}"
     response = client.chat.completions.create(model="llama-3.1-70b-versatile", messages=[{"role": "user", "content": prompt_final}], temperature=0.3)
     return response.choices.message.content
@@ -71,7 +70,7 @@ USERS_DB = {
     "client_france": {"password": "agh7500", "credits": 5}
 }
 
-# Initialisation sécurisée delle variables de session
+# Initialisation sécurisée
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 if "user_logged" not in st.session_state:
@@ -108,7 +107,7 @@ if not st.session_state.authenticated:
                 st.error("Identifiants incorrects. Veuillez réessayer.")
     st.stop()
 
-# 2️⃣ الواجهة الرئيسية للتطبيق (تسير في خط مستقيم ومستقر 100% وبدون خانة مفاتيح)
+# 2️⃣ الواجهة الرئيسية للتطبيق (Alignement linéaire pur sans aucun bloc imbriqué)
 user = st.session_state.user_logged
 st.markdown('<div class="main-title">🎙️ AGHassur — Auditeur Vocal IA</div>', unsafe_allow_html=True)
 st.markdown(f'<div class="subtitle">Connecté en tant que : <b>{user}</b></div>', unsafe_allow_html=True)
@@ -121,26 +120,26 @@ if st.sidebar.button("Se déconnecter"):
     st.session_state.analyse_text = None
     st.rerun()
 
-# نموذج مباشر ومريح مخصص للمكالمة فقط
+# Formulaire direct sans aucune case de clé API
 with st.form("audit_form"):
     st.markdown("### 📝 Collez la transcription de l'appel ci-dessous :")
-    transcription_field = st.text_area(
-        "Insérez le texte complet de l'échange ici...", 
-        height=350, 
-        placeholder="[00:01] Expert: Bonjour..."
-    )
+    transcription_field = st.text_area("Insérez le texte complet de l'échange ici...", height=350, placeholder="[00:01] Expert: Bonjour...")
     submit_audit = st.form_submit_button("🚀 Lancer l'Audit et l'Analyse de l'appel")
 
-# المعالجة الخطية الفلات تماماً الخالية من أي تفرعات أو أخطاء صياغية
+# Logique de traitement plate à 1 seule colonne (Suppression définitive du 'else')
 if submit_audit:
     texte_valide = bool(transcription_field.strip())
     credits_valides = bool(user == "admin" or st.session_state.user_credits > 0)
     
     if not texte_valide:
         st.warning("⚠️ Veuillez coller une transcription avant de lancer l'analyse.")
-    elif not credits_valides:
+    
+    if texte_valide and not credits_valides:
         st.error("❌ Vous n'avez plus de crédits suffisants pour effectuer cette analyse.")
-    else:
+        
+    if texte_valide and credits_valides:
+        # Exécution directe via la fonction isolée du haut
+        st.session_state.analyse_text = appeler_groq_ia(transcription_field)
 
 
 
