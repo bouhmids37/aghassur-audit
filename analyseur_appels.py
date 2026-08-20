@@ -100,7 +100,7 @@ if not st.session_state.authenticated:
                 st.error("Identifiants incorrects. Veuillez réessayer.")
     st.stop()
 
-# 2️⃣ الواجهة الرئيسية للتطبيق (تسير في خط مستقيم تماماً وبدون أي إزاحات)
+# 2️⃣ الواجهة الرئيسية للتطبيق
 user = st.session_state.user_logged
 st.markdown('<div class="main-title">🎙️ AGHassur — Auditeur Vocal IA</div>', unsafe_allow_html=True)
 st.markdown(f'<div class="subtitle">Connecté en tant que : <b>{user}</b></div>', unsafe_allow_html=True)
@@ -113,7 +113,7 @@ if st.sidebar.button("Se déconnecter"):
     st.session_state.analyse_text = None
     st.rerun()
 
-# النموذج الآمن لإدخال البيانات والتحليل عبر Groq
+# Formulaire Groq
 with st.form("audit_form"):
     st.markdown("### 🔑 Configuration de la clé API Groq :")
     api_key_field = st.text_input(
@@ -129,7 +129,7 @@ with st.form("audit_form"):
     )
     submit_audit = st.form_submit_button("🚀 Lancer l'Audit et l'Analyse de l'appel")
 
-# المعالجة الخطية الفلات تماماً لضمان التشغيل ومنع تعليق الأقواس
+# البنية البرمجية المسطحة تماماً والخالية من أي تفرعات أو أقواس مائلة
 if submit_audit:
     api_key_saisie = api_key_field.strip()
     texte_valide = bool(transcription_field.strip())
@@ -142,10 +142,12 @@ if submit_audit:
     elif not credits_valides:
         st.error("❌ Vous n'avez plus de crédits suffisants pour effectuer cette analyse.")
     else:
-        # إعداد الاتصال بسيرفرات Groq
+        # اتصال خطي مستقيم تام
         client = OpenAI(base_url="https://groq.com", api_key=api_key_saisie)
         prompt_final = f"{PROMPT_BASE}\n{transcription_field}"
+        payload_messages = [{"role": "user", "content": prompt_final}]
         
+
 
                 )
 
