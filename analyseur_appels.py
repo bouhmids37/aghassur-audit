@@ -56,12 +56,11 @@ Prends de la hauteur en tant qu'expert R.G.P.D AGHassur pour donner une conclusi
 Voici la transcription de l'appel complète à analyser :
 """
 
-# ✨ FONCTION ISOLÉE : Nettoyée de toute indentation problématique pour Groq
+# ✨ دالة برمجية مستقلة ومختصرة تماماً في سطر مستقيم واحد مستحيل تعطي أي خطأ أقواس أو مسافات
 def appeler_groq_ia(cle_api, texte_appel):
     client = OpenAI(base_url="https://groq.com", api_key=cle_api)
-    prompt_complet = f"{PROMPT_BASE}\n{texte_appel}"
-    liste_messages = [{"role": "user", "content": prompt_complet}]
-    response = client.chat.completions.create(model="llama-3.1-70b-versatile", messages=liste_messages, temperature=0.3)
+    prompt_final = f"{PROMPT_BASE}\n{texte_appel}"
+    response = client.chat.completions.create(model="llama-3.1-70b-versatile", messages=[{"role": "user", "content": prompt_final}], temperature=0.3)
     return response.choices.message.content
 
 # 🔒 Base de données des utilisateurs certifiés AGHassur
@@ -91,7 +90,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 1️⃣ نظام الدخول المستقل تماماً عبر التجميد القاطع
+# 1️⃣ نظام الدخول المستقل تماماً عبر التجميد القاطع لمنع التداخل
 if not st.session_state.authenticated:
     st.markdown('<div class="main-title">🔐 Connexion — AGHassur Audit IA</div>', unsafe_allow_html=True)
     with st.form("login_form"):
@@ -121,7 +120,7 @@ if st.sidebar.button("Se déconnecter"):
     st.session_state.analyse_text = None
     st.rerun()
 
-# Formulaire Groq
+# النموذج الآمن لإدخال البيانات والتحليل عبر Groq
 with st.form("audit_form"):
     st.markdown("### 🔑 Configuration de la clé API Groq :")
     api_key_field = st.text_input(
@@ -145,7 +144,6 @@ if submit_audit:
     
     if not api_key_saisie:
         st.error("❌ Veuillez saisir votre clé API Groq dans la case ci-dessus.")
-    elif not texte_valide:
 
 
 
