@@ -91,6 +91,7 @@ USERS_DB = {
     "admin": {"password": "aghassur2026", "credits": 99999},
     "cabinet_tunis": {"password": "tp1234", "credits": 3},
     "client_france": {"password": "agh7500", "credits": 3}
+     "ARassur": {"password": "ARassur2026", "credits": 3}
 }
 
 if "authenticated" not in st.session_state:
