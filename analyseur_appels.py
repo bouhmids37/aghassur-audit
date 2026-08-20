@@ -45,7 +45,7 @@ Génère un tableau comparatif au format Markdown strict basé uniquement sur le
 
 ### 5. Avis Indépendant et Évaluation du R.G.P.D AGHassur (Module Final Isolé)
 Prends de la hauteur en tant que R.G.P.D AGHassur pour donner une conclusion claire, juridique, technique et stratégique sur le dossier. Tu devez obligatoirement fournir :
-- **Orientation de la Responsabilité Principale de l'échec :** [Détermine avec précision si l'échec de la vente est imputable à un manque de compétence/clarté de l'Expert, ou s'il s'agit d'un 'Échec commercial inhérent au profil du Client' (Client hermétique / refus de coopérer malgré la bonne posture de l'expert)].
+- **Orientation de la Responsabilité Principale de l'échec :** [Détermine avec précision si l'échec de la vente is imputable à un manque de compétence/clarté de l'Expert, ou s'il s'agit d'un 'Échec commercial inhérent au profil du Client' (Client hermétique / refus de coopérer malgré la bonne posture de l'expert)].
 - **Statut Conformité R.G.P.D. (Données de Santé) :** [Analyse si l'expert a respecté la protection des données sensibles : Vérification d'identité, recueil du consentement, absence de fuite d'informations sur les pathologies. Statut : Conforme / Non Conforme avec justification].
 - **Risque de Chute de Contrat (Résiliation / Non-signature) :** [Évalue l'impact au regard des réglementations françaises : Risque Faible, Moyen ou Critique de perte du client lié aux lois Hamon ou Châtel].
 - **Raison Métier du Blocage :** [Sélectionne la cause majeure détectée : Flou sur le Reste à Charge / Problème Noémie ou Tiers Payant / Devis non conforme ou pièces manquantes / Client difficile ou réfractaire].
@@ -115,7 +115,7 @@ else:
         st.session_state.analyse_text = None
         st.rerun()
 
-    # 📍 البلاصة الي يتحط فاها مفتاح الـ API في الواجهة بشكل سري ومحمي
+    # 📍 خانة الـ API Key المضافة للواجهة
     st.markdown("### 🔑 Configuration de la clé API Google Gemini :")
     st.session_state.user_api_key = st.text_input(
         "Entrez votre clé API Gemini (commence par AIzaSy...)", 
@@ -127,7 +127,7 @@ else:
     st.markdown("### 📝 Collez la transcription de l'appel ci-dessous :")
     transcription = st.text_area("Insérez le texte complet de l'échange ici...", height=300, placeholder="[00:01] Expert: Bonjour...", key="input_transcription")
     
-    # تنفيذ الفحص والتحليل ببنية خطية مع جلب المفتاح مباشرة من الواجهة
+    # المعالجة الخطية والمسطحة تماماً للزر تمنع الـ IndentationError نهائياً
     if st.button("🚀 Lancer l'Audit et l'Analyse de l'appel"):
         api_key_saisie = st.session_state.user_api_key.strip()
         
@@ -139,8 +139,8 @@ else:
             st.error("❌ Vous n'avez plus de crédits suffisants pour effectuer cette analyse.")
         else:
             with st.spinner("🧠 L'IA AGHassur analyse l'échange en profondeur... Veuillez patienter..."):
-                try:
-                    # ربط الاتصال بالمفتاح المكتوب في الواجهة مباشرة
+                # الاتصال المباشر والمسطح بسيرفرات جوجل
+                genai.configure(api_key=api_key_saisie)
 
 
 
