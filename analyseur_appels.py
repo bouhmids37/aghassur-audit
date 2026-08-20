@@ -44,8 +44,8 @@ Génère un tableau comparatif au format Markdown strict basé uniquement sur le
 | Poste de Santé | Attentes & Besoins du Client Senior (Interlocuteur 2) | Offre & Proposition de l'Expert (Interlocuteur 1) |
 
 ### 5. Avis Independent et Évaluation du R.G.P.D AGHassur (Module Final Isolé)
-Prends de la hauteur en tant que R.G.P.D AGHassur pour donner une conclusion claire, juridique, technique et stratégique sur le dossier. Tu devez obligatoirement fournir :
-- **Orientation de la Responsabilité Principale de l'échec :** [Détermine avec précision si l'échec de la vente est imputable à un manque de compétence/clarté de l'Expert, ou s'il s'agit d'un 'Échec commercial inहेरent au profil du Client' (Client hermétique / refus de coopérer malgré la bonne posture de l'expert)].
+Prends de la hauteur en tant a que R.G.P.D AGHassur pour donner une conclusion claire, juridique, technique et stratégique sur le dossier. Tu devez obligatoirement fournir :
+- **Orientation de la Responsabilité Principale de l'échec :** [Détermine avec précision si l'échec de la vente est imputable à un manque de compétence/clarté de l'Expert, ou s'il s'agit d'un 'Échec commercial inhérent au profil du Client' (Client hermétique / refus de coopérer malgré la bonne posture de l'expert)].
 - **Statut Conformité R.G.P.D. (Données de Santé) :** [Analyse si l'expert a respecté la protection des données sensibles : Vérification d'identité, recueil du consentement, absence de fuite d'informations sur les pathologies. Statut : Conforme / Non Conforme avec justification].
 - **Risque de Chute de Contrat (Résiliation / Non-signature) :** [Évalue l'impact au regard des réglementations françaises : Risque Faible, Moyen ou Critique de perte du client lié aux lois Hamon ou Châtel].
 - **Raison Métier du Blocage :** [Sélectionne la cause majeure détectée : Flou sur le Reste à Charge / Problème Noémie ou Tiers Payant / Devis non conforme ou pièces manquantes / Client difficile ou réfractaire].
@@ -63,7 +63,7 @@ USERS_DB = {
     "client_france": {"password": "agh7500", "credits": 5}
 }
 
-# Initialisation sécurisée
+# Initialisation sécurisée delle variables de session
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 if "user_logged" not in st.session_state:
@@ -83,7 +83,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 1️⃣ ÉCRAN DE CONNEXION PRIVÉ
+# 1️⃣ نظام الدخول المستقل تماماً عبر التجميد القاطع لمنع التداخل الهيكلي
 if not st.session_state.authenticated:
     st.markdown('<div class="main-title">🔐 Connexion — AGHassur Audit IA</div>', unsafe_allow_html=True)
     with st.form("login_form"):
@@ -98,51 +98,50 @@ if not st.session_state.authenticated:
                 st.rerun()
             else:
                 st.error("Identifiants incorrects. Veuillez réessayer.")
+    st.stop() # إيقاف فوري لتنفيذ بقية الصفحة حتى ينجح تسجيل الدخول، مما يحذف الـ Else المسببة للخطأ نهائياً
 
-# 2️⃣ INTERFACE PRINCIPALE (هيكل مسطح تماماً وخالي من التداخلات)
-if st.session_state.authenticated:
-    user = st.session_state.user_logged
-    st.markdown('<div class="main-title">🎙️ AGHassur — Auditeur Vocal IA</div>', unsafe_allow_html=True)
-    st.markdown(f'<div class="subtitle">Connecté en tant que : <b>{user}</b></div>', unsafe_allow_html=True)
-    st.sidebar.metric(label="Crédits d'analyse restants", value=str(st.session_state.user_credits))
+# 2️⃣ الواجهة الرئيسية للتطبيق (تسير الآن في سطر مستقيم 100% وبدون أي إزاحات)
+user = st.session_state.user_logged
+st.markdown('<div class="main-title">🎙️ AGHassur — Auditeur Vocal IA</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="subtitle">Connecté en tant que : <b>{user}</b></div>', unsafe_allow_html=True)
+
+st.sidebar.metric(label="Crédits d'analyse restants", value=str(st.session_state.user_credits))
+
+if st.sidebar.button("Se déconnecter"):
+    st.session_state.authenticated = False
+    st.session_state.user_logged = ""
+    st.session_state.analyse_text = None
+    st.rerun()
+
+# تأمين نموذج المدخلات والـ Form
+with st.form("audit_form"):
+    st.markdown("### 🔑 Configuration de la clé API Google Gemini :")
+    api_key_field = st.text_input(
+        "Entrez votre clé API Gemini (Copiez le code depuis Google AI Studio)", 
+        type="password", 
+        placeholder="Collez votre clé API Gemini ici (commence par AQ)..."
+    )
+    st.markdown("### 📝 Collez la transcription de l'appel ci-dessous :")
+    transcription_field = st.text_area(
+        "Insérez le texte complet de l'échange ici...", 
+        height=300, 
+        placeholder="[00:01] Expert: Bonjour..."
+    )
+    submit_audit = st.form_submit_button("🚀 Lancer l'Audit et l'Analyse de l'appel")
+
+# معالجة الضغط والتحليل ببنية خطية مستقيمة ومستقلة تماماً لا تقبل الأخطاء الهيكلية
+if submit_audit:
+    api_key_saisie = api_key_field.strip()
+    texte_valide = bool(transcription_field.strip())
+    credits_valides = bool(user == "admin" or st.session_state.user_credits > 0)
     
-    if st.sidebar.button("Se déconnecter"):
-        st.session_state.authenticated = False
-        st.session_state.user_logged = ""
-        st.session_state.analyse_text = None
-        st.rerun()
-
-    # تأمين المدخلات بالكامل داخل Form لمنع تحديث الصفحة العشوائي
-    with st.form("audit_form"):
-        st.markdown("### 🔑 Configuration de la clé API Google Gemini :")
-        api_key_field = st.text_input(
-            "Entrez votre clé API Gemini (Copiez le code depuis Google AI Studio)", 
-            type="password", 
-            placeholder="Collez votre clé API Gemini ici (commence par AQ)..."
-        )
-        st.markdown("### 📝 Collez la transcription de l'appel ci-dessous :")
-        transcription_field = st.text_area(
-            "Insérez le texte complet de l'échange ici...", 
-            height=300, 
-            placeholder="[00:01] Expert: Bonjour..."
-        )
-        submit_audit = st.form_submit_button("🚀 Lancer l'Audit et l'Analyse de l'appel")
-
-    # معالجة الضغط والتحليل ببنية خطية معقّمة ومستقلة تماماً لمنع الـ IndentationError
-    if submit_audit:
-        api_key_saisie = api_key_field.strip()
-        texte_valide = bool(transcription_field.strip())
-        credits_valides = bool(user == "admin" or st.session_state.user_credits > 0)
-        
-        if not api_key_saisie:
-            st.error("❌ Veuillez saisir votre clé API Gemini dans la case ci-dessus avant de lancer l'analyse.")
-        elif not texte_valide:
-            st.warning("⚠️ Veuillez coller une transcription avant de lancer l'analyse.")
-        elif not credits_valides:
-            st.error("❌ Vous n'avez plus de crédits suffisants pour effectuer cette analyse.")
-        else:
-
-
+    if not api_key_saisie:
+        st.error("❌ Veuillez saisir votre clé API Gemini dans la case ci-dessus avant de lancer l'analyse.")
+    elif not texte_valide:
+        st.warning("⚠️ Veuillez coller une transcription avant de lancer l'analyse.")
+    elif not credits_valides:
+        st.error("❌ Vous n'avez plus de crédits suffisants pour effectuer cette analyse.")
+    else:
 
 
 
