@@ -129,7 +129,7 @@ with st.form("audit_form"):
     )
     submit_audit = st.form_submit_button("🚀 Lancer l'Audit et l'Analyse de l'appel")
 
-# المعالجة الخطية المسطحة تماماً والخالية من أي تداخلات أو أخطاء مسافات
+# المعالجة الخطية الفلات تماماً لضمان التشغيل ومنع تعليق الأقواس
 if submit_audit:
     api_key_saisie = api_key_field.strip()
     texte_valide = bool(transcription_field.strip())
@@ -143,12 +143,9 @@ if submit_audit:
         st.error("❌ Vous n'avez plus de crédits suffisants pour effectuer cette analyse.")
     else:
         # إعداد الاتصال بسيرفرات Groq
-        client = OpenAI(
-            base_url="https://groq.com",
-            api_key=api_key_saisie
-        )
+        client = OpenAI(base_url="https://groq.com", api_key=api_key_saisie)
+        prompt_final = f"{PROMPT_BASE}\n{transcription_field}"
         
-
 
                 )
 
